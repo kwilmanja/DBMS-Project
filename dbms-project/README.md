@@ -1,3 +1,21 @@
+
+
+npm install react
+npm install bootstrap
+npm install redux ??????
+npm install @reduxjs/toolkit react-redux
+npm install react-router-dom
+npm install axios
+npm install bootswatch
+npm install bootstrap-icons
+
+
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

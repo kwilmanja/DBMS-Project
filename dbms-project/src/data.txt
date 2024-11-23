@@ -1,0 +1,7 @@
+Available anywhere-
+    auth
+        currentUser - {}
+    follows
+        currentFollowed - [String]
+        currentFollower - [String]
+
