@@ -1,21 +1,33 @@
 import {useDispatch, useSelector} from "react-redux";
-import {current} from "@reduxjs/toolkit";
 import {useEffect, useState} from "react";
-import {findAllReviewsThunk} from "../reviews/review-thunks";
-import DetailsReview from "../details/DetailsReview";
-import HomeTrailCard from "./HomeTrailCard";
-import {trailSearchIDThunk} from "../trails/trail-thunks";
-import {trailSearchID} from "../trails/trail-service";
-import {collectTrailIDs, findTrails} from "../utility";
+import HomeStoryCard from "./HomeStoryCard";
+
 
 export default function Home() {
 
     const { currentUser } = useSelector((state) => state.auth);
 
-    const [trails, setTrails] = useState([]);
-    const [reviews, setReviews] = useState([]);
+    const [stories, setStories] = useState([]);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        async function fetchData() {
+            setStories([
+                {name: "Story 1 Title", 
+                text: "Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World Hello World ", 
+                prompt: "prompt prompt prompt prompt prompt prompt prompt prompt prompt prompt prompt ", 
+                author: "pozboi", 
+                rating: 4}, 
+
+                {name: "A Long Way to the Top If You Wanna Rock and Roll", 
+                prompt: "prompt prompt prompt prompt prompt prompt prompt prompt prompt prompt prompt ", 
+                text: "Goodbye World Goodbye World Goodbye World Goodbye World Goodbye World Goodbye World Goodbye World Goodbye World ", 
+                author: "kwilmanja", 
+                rating: 3}])
+        }
+        fetchData();
+    }, []);
 
 
 
@@ -47,10 +59,12 @@ export default function Home() {
                 {currentUser && (
                 <h1 className="text-center" style={header}>Hello {currentUser.username}</h1>)}
 
-                <h1 className="text-center" style={header}>Mountain Biker Blog</h1>
+                <h1 className="text-center" style={header}>Stories:</h1>
 
                 <div>
-
+                    {stories && stories.map((story) =>
+                                    <HomeStoryCard story={story}/>
+                    )}
                 </div>
 
             </div>
