@@ -58,10 +58,10 @@ CREATE TABLE likes (
 );
 
 CREATE TABLE comment (
+	id INT primary key AUTO_INCREMENT,
 	username VARCHAR(100),
     story_id INT,
     text VARCHAR(512) NOT NULL,
-    PRIMARY KEY (username, story_id),
     FOREIGN KEY (username) REFERENCES account(username)
 		ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (story_id) REFERENCES story(story_id)
@@ -106,7 +106,7 @@ insert into story (title, description, username, published_date, end_passage)
 	values ('story title', 'story description', 'joe', now(), 5),
 	('another story', 'story description', 'joe', now(), 4);
 
-insert into comment values ('joe', 1, 'good story'), ('pozboi', 1, 'mid story');
+insert into comment (username, story_id, text) values ('joe', 1, 'good story'), ('pozboi', 1, 'mid story');
 
 insert into likes values ('joe', 1), ('pozboi', 1);
 
@@ -155,7 +155,7 @@ create procedure get_story_metadata
 (story_id_p int)
 begin
 	select s.*, count(*) as num_likes from story s
-	join likes l on l.story_id = s.story_id
+	left join likes l on l.story_id = s.story_id
 	where s.story_id = story_id_p
 	group by s.story_id;
 end //

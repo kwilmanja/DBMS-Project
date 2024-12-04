@@ -17,6 +17,11 @@ export const updateCommentThunk = createAsyncThunk(
         return await commentsService.updateComment(comment);
     });
 
+export const deleteCommentThunk = createAsyncThunk(
+    "deleteCommentThunk", async (commentId) => {
+        return await commentsService.deleteComment(commentId);
+    });
+
 export const createLikeThunk = createAsyncThunk(
     "createLike", async (storyId) => {
         return await commentsService.createLike(storyId);

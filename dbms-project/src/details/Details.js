@@ -37,16 +37,17 @@ function Details() {
     }, []);
 
 
-    const post = () => {
+    const post = async () => {
         if(content.length === 0){
             return;
         }
 
         const review ={
-            storyId: story.story_id,
+            story_id: story.story_id,
             text: content
         }
-        dispatch(createCommentThunk(review));
+        await dispatch(createCommentThunk(review));
+        dispatch(getStoryCommentsThunk(storyId));
         setContent('');
     }
 
@@ -93,7 +94,7 @@ function Details() {
                         {currentUser && (
                             <div>
                                 <div>
-                                <h5>Write a Review: </h5>
+                                <h5>Write a Comment: </h5>
                                 <textarea
                                     style={textboxStyle}
                                     rows="4"
@@ -108,7 +109,7 @@ function Details() {
                                     <div>
 
                                         <button type="button" className="btn btn-primary d-inline" onClick={post}>
-                                                Post Review</button>
+                                                Post Comment</button>
                                     </div>
 
 

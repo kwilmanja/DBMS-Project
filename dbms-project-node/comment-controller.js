@@ -24,8 +24,8 @@ const CommentController = (app) => {
         }
         const username = currentUser.username;
         const text = req.body.text;
-        const storyId = req.body.storyId;
-        pool.query('insert into comment values (?, ?, ?);', 
+        const storyId = req.body.story_id;
+        pool.query('insert into comment (username, story_id, text) values (?, ?, ?);', 
             [username, storyId, text], (err, results) => {
             if (err) {
                 console.error('Error creating comment:', err);
@@ -45,9 +45,10 @@ const CommentController = (app) => {
         }
         const username = currentUser.username;
         const text = req.body.text;
-        const storyId = req.body.storyId;
-        pool.query('update comment set text = ? where username = ? and story_id = ?;', 
-            [text, username, storyId], (err, results) => {
+        const storyId = req.body.story_id;
+        const commentId = req.body.id;
+        pool.query('update comment set text = ? where username = ? and story_id = ? and id = ?;', 
+            [text, username, storyId, commentId], (err, results) => {
             if (err) {
                 console.error('Error updating comment:', err);
                 res.status(500).json({ error: 'Failed to update comment' });
@@ -56,6 +57,26 @@ const CommentController = (app) => {
                 res.json(results);
             }
         });
+    };
+
+    const deleteComment = async (req, res) => {
+        let currentUser = req.session["currentUser"];
+        if (!currentUser) {
+            res.status(500).json({ error: 'Not signed in' });
+            return;
+        }
+        const username = currentUser.username;
+        const commentId = req.params.commentId;
+        pool.query('delete from comment where username = ? and id = ?;', 
+            [username, commentId], (err, results) => {
+            if (err) {
+                console.error('Error deleting comment:', err);
+                res.status(500).json({ error: 'Failed to delete comment' });
+                return;
+            } else {
+                res.json(results);
+            }
+          });
     };
 
     const createLike = async (req, res) => {
@@ -101,6 +122,7 @@ const CommentController = (app) => {
     app.get("/api/comments/:storyId", getStoryComments);
     app.post("/api/comments/create", createComment);
     app.put("/api/comments/update", updateComment);
+    app.delete("/api/comments/delete/:commentId", deleteComment);
 
     app.post("/api/likes/create/:storyId", createLike);
     app.delete("/api/likes/delete/:storyId", deleteLike);

@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getStoryCommentsThunk } from "./comment-thunks";
-
+import { getStoryCommentsThunk, updateCommentThunk } from "./comment-thunks";
 
 
 const commentSlice = createSlice({

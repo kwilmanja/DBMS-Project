@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import {formatDate} from "../utility";
-import { updateCommentThunk } from "../comments/comment-thunks";
+import { updateCommentThunk, getStoryCommentsThunk, deleteCommentThunk} from "../comments/comment-thunks";
 
 function DetailsReview({comment}) {
 
@@ -31,11 +31,12 @@ function DetailsReview({comment}) {
                   <button className="btn btn-success float-end" type="button"
                           id="button-addon2"
                           onClick={async () => {
-                              setEditing(false);
-                              dispatch(updateCommentThunk({
+                                setEditing(false);
+                                await dispatch(updateCommentThunk({
                                                              ...comment,
                                                              text: editContent
-                                                         }));
+                                }));
+                                dispatch(getStoryCommentsThunk(comment.story_id));
                           }}>Save
                   </button>
 
@@ -58,8 +59,11 @@ function DetailsReview({comment}) {
                                    <div>
 
                                        <button className="btn btn-danger float-end" type="button"
-                                               id="button-addon2">
-                                                Delete
+                                               id="button-addon2"
+                                               onClick={async () => {
+                                                await dispatch(deleteCommentThunk(comment.id));
+                                                dispatch(getStoryCommentsThunk(comment.story_id));
+                                            }}>Delete
                                        </button>
                                        <button className="btn btn-warning float-end" type="button"
                                                id="button-addon2"
