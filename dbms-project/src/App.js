@@ -30,7 +30,7 @@ function App() {
               <Route path="/prompts" element={<Prompts />} />
               <Route path="/prompts/:promptId" element={<PromptStories />} />
               <Route path="/details/:storyId" element={<Details />} />
-              <Route path="/make/:id" element={<Make />} />
+              <Route path="/make/:passageId" element={<Make />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
