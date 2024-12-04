@@ -59,12 +59,12 @@ const PromptCard = ({ prompt }) => {
 
                   <h6 className="card-subtitle text-muted" style={adjustment}>Description: </h6>
                   <div className="prompt-description">
-                    <h7 className="prompt-desc-text">{prompt.description}</h7>
+                    <h6 className="prompt-desc-text">{prompt.description}</h6>
                   </div>
 
                   <h6 className="card-subtitle text-muted" style={adjustment}>Created by: </h6>
                   <div className="prompt-creator">
-                    <h7 className="prompt-creator-text">{prompt.username}</h7>
+                    <h6 className="prompt-creator-text">{prompt.username}</h6>
                   </div>
 
                 </div>

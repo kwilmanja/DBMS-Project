@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { getAllStoriesByPromptIdThunk } from "../stories/stories-thunks.js";
+import { getAllStoriesByPromptIdThunk, getPromptByIdThunk } from "../stories/stories-thunks.js";
 import HomeStoryCard from "../home/HomeStoryCard.js";
 
 
@@ -9,6 +9,7 @@ export default function PromptStories() {
 
   const { currentUser } = useSelector((state) => state.auth);
   const { promptId } = useParams();
+  const [prompt, setPrompt] = useState();
   const [stories, setStories] = useState();
 
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ export default function PromptStories() {
         const storiesAction = await dispatch(getAllStoriesByPromptIdThunk(promptId));
         const stories = storiesAction.payload.slice();
         setStories(stories);
+        const promptAction = await dispatch(getPromptByIdThunk(promptId));
+        const prompt = promptAction.payload;
+        setPrompt(prompt)
       } catch (error) {
         if (error.response) {
           console.log('Error status:', error.response.status);
@@ -50,11 +54,11 @@ export default function PromptStories() {
     navigate("/make");
   }
 
-  return (stories &&
+  return (stories && prompt &&
     <div className="row" style={background}>
       <div className="col-auto col-md-10 col-lg-8 col-xl-6">
         <h1 className="text-center" style={header}>
-          {stories[0].name}
+          {prompt.name}
         </h1>
 
         <button className="create-story" onClick={handleCreateStoryClick}>
