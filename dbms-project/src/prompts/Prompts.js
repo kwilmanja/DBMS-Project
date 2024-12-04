@@ -16,7 +16,6 @@ export default function Prompts() {
         async function fetchData() {
             const promptsAction = await dispatch(getAllPromptsThunk());
             try {
-                console.log(promptsAction);
                 const prompts = promptsAction.payload.slice();
                 setPrompts(prompts)
             } catch (error) {

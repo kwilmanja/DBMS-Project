@@ -28,7 +28,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/prompts" element={<Prompts />} />
-              <Route path="/prompts/:promptid" element={<PromptStories />} />
+              <Route path="/prompts/:promptId" element={<PromptStories />} />
               <Route path="/details/:storyId" element={<Details />} />
               <Route path="/make" element={<Make />} />
               <Route path="/login" element={<Login />} />
