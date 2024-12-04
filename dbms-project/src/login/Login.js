@@ -6,11 +6,14 @@ function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [failed, setFailed] = useState(false);
+
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleLogin = async () => {
+        
         await dispatch(loginThunk({ username, password }));
         navigate("/profile");
     };
@@ -18,6 +21,7 @@ function Login() {
     return (
         <div>
             <h1>Login</h1>
+            {failed && (<p>Failed to login with username and password</p>)}
             <div>
                 <label>Username</label>
                 <input className="form-control"

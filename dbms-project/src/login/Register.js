@@ -13,11 +13,54 @@ function Register() {
         isAdmin: false
         });
 
+
+    const [invalid, setInvalid] = useState('');
+    const [failed, setFailed] = useState(false);
+
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleRegister = async () => {
         try {
-            await dispatch(registerThunk(credentials));
+
+            setInvalid('');
+            setFailed(false);
+
+            if (credentials.username.length > 100){
+                setInvalid("Username is too long");
+                return;
+            } else if (credentials.password.length > 100){
+                setInvalid("Password is too long");
+                return;
+            }else if(credentials.email.length > 100){
+                setInvalid("Email is too long");
+                return;
+            } else if (credentials.phone_no.length > 10){
+                setInvalid("Phone number is too long");
+                return;
+            }
+            
+            if (credentials.username.length === 0){
+                setInvalid("Username must not be blank");
+                return;
+            } else if (credentials.password.length === 0){
+                setInvalid("Password must not be blank");
+                return;
+            }else if(credentials.email.length === 0){
+                setInvalid("Email must not be blank");
+                return;
+            } else if (credentials.phone_no.length === 0){
+                setInvalid("Phone number must not be blank");
+                return;
+            }
+            
+
+            const registrationAction = await dispatch(registerThunk(credentials));
+            if(registrationAction.error){
+                setFailed(true);
+                return;
+            }
+
             await dispatch(loginThunk(credentials));
             navigate("/profile");
         } catch (e) {
@@ -27,6 +70,9 @@ function Register() {
     return (
         <div>
             <h1>Register</h1>
+            {failed && (<p>Duplicate Username!</p>)}
+            {invalid && (invalid !== '') && (<p>{invalid}</p>)}
+
             <div>
                 <label>Username</label>
                 <input className="form-control"

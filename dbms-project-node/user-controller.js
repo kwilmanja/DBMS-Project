@@ -6,14 +6,19 @@ const UserController = (app) => {
     const register = async (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
-        const email = req.body.username;
-        const phone = req.body.password;
+        const email = req.body.email;
+        const phone = req.body.phone_no;
 
         pool.query('insert into account values (?, ?, ?, ?);', 
             [username, email, phone, password], (err, results) => {
             if (err) {
                 console.error('Error creating user:', err);
-                res.status(500).json({ error: 'Failed to create user' });
+
+                if(err.errno == 1062){
+                    res.status(409).json({ error: 'Failed to create user (duplicate username)' });
+                } else{
+                    res.status(500).json({ error: 'Failed to create user' });
+                }
                 return;
             } else {
                 res.json(results);
@@ -68,9 +73,11 @@ const UserController = (app) => {
         const user = req.body;
         const email = user.email;
         const phone = user.phone;
+        const username = user.username;
+        const password = user.password;
 
-        pool.query('update account set email = ?, phone_no = ? where username = ?;', 
-            [email, phone, req.params.username], (err, results) => {
+        pool.query('update account set email = ?, phone_no = ? where username = ? and password = ?;', 
+            [email, phone, username, password], (err, results) => {
             if (err) {
                 console.error('Error updating user:', err);
                 res.status(500).json({ error: 'Failed to update user' });
@@ -117,7 +124,7 @@ const UserController = (app) => {
     app.get("/api/users/profile/:username", findProfileByUsername);
     app.get("/api/users/all", findAllUsers);
 
-    app.put("/api/users/:username", updateUser);
+    app.put("/api/users/update", updateUser);
 
 
 };
