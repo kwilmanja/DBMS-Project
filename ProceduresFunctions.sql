@@ -2,31 +2,65 @@ use stories;
 
 -- Define Procedures and Functions:
 
-drop procedure if exists build_story;
-DELIMITER //
-create procedure build_story
-(story_id_p int)
-begin
-	WITH RECURSIVE passage_tree AS (
-    SELECT *
-    FROM passage
-    WHERE id = (select end_passage from story where story_id = story_id_p)
-    UNION ALL
-    SELECT p.*
-    FROM passage_tree pt
-    JOIN passage p 
-    ON pt.previous_passage = p.id
-	)
-	SELECT * from passage_tree order by id;
-end //
-DELIMITER ;
-call build_story(1);
+-- drop procedure if exists get_story_comments;
+-- DELIMITER //
+-- create procedure get_story_comments
+-- (story_id_p int)
+-- begin
+-- 	select s.*, count(*) as num_likes from story s
+-- 	join likes l on l.story_id = s.story_id
+-- 	where s.story_id = story_id_p
+-- 	group by s.story_id;
+-- end //
+-- DELIMITER ;
+-- call get_story_comments(1)
 
-
-
-select * from passage;
+-- select * from story;
+-- 
+-- select * from passage;
+-- 
+-- select * from story;
+-- 
+-- select * from account;
+-- 
+-- select * from theme;
 
 select * from story;
+-- 
+-- select * from likes;
+call get_story_metadata(1);
+
+
+
+
+
+select s.*, count(*) as num_likes from story s
+	left join likes l on l.story_id = s.story_id
+	where s.story_id = 2
+	group by s.story_id;
+
+
+
+-- drop procedure if exists get_stories_by_prompt_id;
+-- DELIMITER //
+-- create procedure get_stories_by_prompt_id
+-- (prompt_id_p int)
+-- begin
+-- 	select s.*, 
+-- 	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes
+-- 	from story s
+-- 	left join likes l on l.story_id = s.story_id
+-- 	join passage p on p.id = s.end_passage
+-- 	join prompt pr on pr.id = p.prompt
+-- 	where pr.id = prompt_id_p
+-- 	group by s.story_id;
+-- end //
+-- DELIMITER ;
+-- call get_stories_by_prompt_id(1)
+
+
+select * from comment;
+
 
 
 

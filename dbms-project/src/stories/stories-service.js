@@ -55,3 +55,8 @@ export const getStoryPassages = async (storyId) => {
     const response = await api.get(`${STORY_API}/info/passages/${storyId}`);
     return response.data;
 }
+
+export const getAllStoriesByPromptId = async (promptId) => {
+    const response = await api.get(`${STORY_API}/all/prompt/${promptId}`);
+    return response.data;
+}

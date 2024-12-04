@@ -109,18 +109,28 @@ const StoryController = (app) => {
           });
     };
 
-
+    const getAllStories = async (req, res) => {
+        pool.query('call get_all_stories();', (err, results) => {
+            if (err) {
+                console.error('Error finding stories:', err);
+                res.status(500).json({ error: 'Failed to find stories' });
+                return;
+            } else {
+                res.json(results[0]);
+            }
+          });
+    };
 
     const getStoryMetadata = async (req, res) => {
         const storyId = req.params.id;
-        pool.query('select * from story where story_id = ?;', 
+        pool.query('call get_story_metadata(?);', 
             [storyId], (err, results) => {
             if (err) {
                 console.error('Error finding story:', err);
                 res.status(500).json({ error: 'Failed to find story' });
                 return;
             } else {
-                res.json(results[0]);
+                res.json(results[0][0]);
             }
           });
     };
@@ -139,18 +149,19 @@ const StoryController = (app) => {
           });
     };
 
-    const getAllStories = async (req, res) => {
-        pool.query('select * from story;', (err, results) => {
+    const getAllStoriesByPromptId = async (req, res) => {
+        const promptId = req.params.id;
+        pool.query('call get_stories_by_prompt_id(?);', 
+            [promptId], (err, results) => {
             if (err) {
-                console.error('Error finding stories:', err);
-                res.status(500).json({ error: 'Failed to find stories' });
+                console.error('Error finding stories associated with prompt:', err);
+                res.status(500).json({ error: 'Failed to find stories associated with prompt' });
                 return;
             } else {
-                res.json(results);
+                res.json(results[0]);
             }
           });
     };
-
 
     app.post("/api/prompt/create", createPrompt);
     app.get("/api/prompt/info/:id", getPromptById);
@@ -165,6 +176,8 @@ const StoryController = (app) => {
     app.get("/api/story/info/metadata/:id", getStoryMetadata);
     app.get("/api/story/info/passages/:id", getStoryPassages);
 
+
+    app.get("/api/story/all/prompt/:id", getAllStoriesByPromptId)
 
 };
 export default StoryController;

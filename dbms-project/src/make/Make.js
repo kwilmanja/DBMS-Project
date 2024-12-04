@@ -50,12 +50,6 @@ export default function Make() {
 
                 <h1 className="text-center" style={header}>Make a Story:</h1>
 
-                <div>
-                    {prompts && prompts.map((prompt) =>
-                        <MakeStoryCard prompt={prompt} />
-                    )}
-                </div>
-
             </div>
 
             <div className="col-md-1 col-lg-2 col-xl-3">

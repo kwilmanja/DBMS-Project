@@ -48,8 +48,7 @@ export default function Home() {
             </div>
 
             <div className="col-auto col-md-10 col-lg-8 col-xl-6">
-                {currentUser && (
-                <h1 className="text-center" style={header}>Hello {currentUser.username}</h1>)}
+                <h1 className="text-center" style={header}>Welcome</h1>
 
                 <div>
                     {stories && stories.map((story) =>

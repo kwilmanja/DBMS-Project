@@ -31,7 +31,7 @@ const UserController = (app) => {
         const password = req.body.password;
         pool.query('select * from account where username = ? AND password = ?;', 
             [username, password], (err, results) => {
-            if (err) {
+            if (err || !results[0]) {
                 console.error('Error finding user:', err);
                 res.status(500).json({ error: 'Failed to login user' });
                 return;
