@@ -22,10 +22,20 @@ function Nav() {
                     <div className="collapse navbar-collapse" id="navbarColor01">
                         <ul className="navbar-nav me-auto">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">Home</Link>
+                                <Link className="nav-link" to="/">Stories</Link>
                                 <span className="visually-hidden">(current)</span>
-
                             </li>
+
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/prompts">Prompts</Link>
+                                <span className="visually-hidden">(current)</span>
+                            </li>
+
+                            {currentUser &&
+                             <li className="nav-item">
+                                 <Link className="nav-link" to="/make">Make a Story</Link>
+                             </li>
+                            }
 
                             {!currentUser &&
                              <li className="nav-item">

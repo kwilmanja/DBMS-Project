@@ -1,22 +1,18 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import HomeStoryCard from "./HomeStoryCard";
-import { getAllStoriesThunk } from "../stories/stories-thunks";
 
 
-export default function Home() {
+export default function Prompts() {
 
     const { currentUser } = useSelector((state) => state.auth);
 
-    const [stories, setStories] = useState([]);
+    const [prompts, setPrompts] = useState([]);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchData() {
-            const storiesAction = await dispatch(getAllStoriesThunk());
-            const stories = storiesAction.payload.slice();            
-            setStories(stories);
+ 
         }
         fetchData();
     }, []);
@@ -48,14 +44,8 @@ export default function Home() {
             </div>
 
             <div className="col-auto col-md-10 col-lg-8 col-xl-6">
-                {currentUser && (
-                <h1 className="text-center" style={header}>Hello {currentUser.username}</h1>)}
 
-                <div>
-                    {stories && stories.map((story) =>
-                                    <HomeStoryCard story={story}/>
-                    )}
-                </div>
+                <h1 className="text-center" style={header}>Prompts:</h1>
 
             </div>
 

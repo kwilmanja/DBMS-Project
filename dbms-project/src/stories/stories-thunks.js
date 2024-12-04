@@ -53,7 +53,7 @@ export const getAllStoriesThunk = createAsyncThunk(
     async () => await getAllStories()
 )
 
-export const getStoryMetagataThunk = createAsyncThunk(
+export const getStoryMetadataThunk = createAsyncThunk(
     'getStoryMetagata',
     async (storyId) => await getStoryMetadata(storyId)
 )

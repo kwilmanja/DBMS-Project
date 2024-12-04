@@ -48,7 +48,7 @@ function Profile() {
                          {currentUser && profile &&
                           ((currentUser.username === profile.username) ?
                                   <button className="btn btn-dark" onClick={edit}>Edit</button>
-                                : <h1> Other Profile </h1>)
+                                : <div/>)
                          }
 
                      </div>

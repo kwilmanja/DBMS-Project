@@ -1,6 +1,5 @@
 import { BrowserRouter, Link } from "react-router-dom";
 import { Routes, Route } from "react-router";
-// import Home from "./Home";
 import store from './store';
 import { Provider } from "react-redux";
 import Nav from "./nav";
@@ -11,7 +10,9 @@ import Register from "./login/Register";
 import CurrentUserContext from "./users/current-user-context";
 import Admin from "./login/Admin";
 import ProfileEdit from "./profile/ProfileEdit";
-
+import Make from "./make/Make.js";
+import Prompts from "./prompts/Prompts.js";
+import Details from "./details/Details.js";
 
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
 
                   <Routes>
                       <Route path="/" element={<Home />} />
+                      <Route path="/prompts" element={<Prompts />} />
+                      <Route path="/details/:storyId" element={<Details />} />
+                      <Route path="/make" element={<Make />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/profile" element={<Profile />} />
