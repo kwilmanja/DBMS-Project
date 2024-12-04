@@ -30,7 +30,7 @@ const MakeStoryCard = ({ prompt }) => {
 
     const adjustment = {
         "position": "relative",
-        "top": "-30px"
+        "padding-top": "20px"
     }
 
     const link = {
@@ -42,34 +42,35 @@ const MakeStoryCard = ({ prompt }) => {
         <>
             {prompt &&
                 <div className="col">
-                    <div className="card mb-3" style={card}>
-                        <div className="card-header align-items-center" style={inline}>
-                            <Link to={'/details/' + prompt.id} style={link}>
+                    <Link to={'/details/' + prompt.id} style={link}>
+                        <div className="card mb-3" style={card}>
+                            <div className="card-header align-items-center" style={inline}>
                                 <h3 style={inline}>{prompt.name} </h3>
-                            </Link>
-                        </div>
+                            </div>
+                            <div className="card-body">
 
-                        <div className="card-body">
+                                <div>
+                                    <h6 className="card-subtitle text-muted">Rating: </h6>
+                                    <div className="progress ms-1" style={bar2}>
+                                        <div className="progress-bar" role="progressbar"
+                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                                            style={bar}></div>
+                                    </div>
 
-                            <div>
-                                <h6 className="card-subtitle text-muted">Rating: </h6>
-                                <div className="progress ms-1" style={bar2}>
-                                    <div className="progress-bar" role="progressbar"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                                        style={bar}></div>
+                                    <h6 className="card-subtitle text-muted" style={adjustment}>Description: </h6>
+                                    <div className="prompt-description">
+                                        <h7 className="prompt-desc-text">{prompt.description}</h7>
+                                    </div>
+
+                                    <h6 className="card-subtitle text-muted" style={adjustment}>Created by: </h6>
+                                    <div className="prompt-creator">
+                                        <h7 className="prompt-creator-text">{prompt.username}</h7>
+                                    </div>
+
                                 </div>
-
-                                <h6 className="card-subtitle text-muted">Description: </h6>
-
-                                <h6 className="card-subtitle text-muted">Created by: </h6>
-
                             </div>
                         </div>
-
-                        <div className="card-body" style={adjustment}>
-                            <p className="card-text">{prompt.description}</p>
-                        </div>
-                    </div>
+                    </Link>
                 </div>
             }
         </>

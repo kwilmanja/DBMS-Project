@@ -12,34 +12,36 @@ import Admin from "./login/Admin";
 import ProfileEdit from "./profile/ProfileEdit";
 import Make from "./make/Make.js";
 import Prompts from "./prompts/Prompts.js";
+import PromptStories from "./prompts/PromptStories.js"
 import Details from "./details/Details.js";
 
 
 function App() {
   return (
-      <div className="container-fluid">
-        <Provider store={store}>
-            <CurrentUserContext>
-                <BrowserRouter>
+    <div className="container-fluid">
+      <Provider store={store}>
+        <CurrentUserContext>
+          <BrowserRouter>
 
-                  <Nav/>
+            <Nav />
 
-                  <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/prompts" element={<Prompts />} />
-                      <Route path="/details/:storyId" element={<Details />} />
-                      <Route path="/make" element={<Make />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/profile/edit" element={<ProfileEdit />} />
-                      <Route path="/profile/:username" element={<Profile />} />
-                      <Route path="/admin" element={<Admin/>}/>
-                  </Routes>
-                </BrowserRouter>
-            </CurrentUserContext>
-        </Provider>
-      </div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/prompts" element={<Prompts />} />
+              <Route path="/prompts/:promptid" element={<PromptStories />} />
+              <Route path="/details/:storyId" element={<Details />} />
+              <Route path="/make" element={<Make />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<ProfileEdit />} />
+              <Route path="/profile/:username" element={<Profile />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </BrowserRouter>
+        </CurrentUserContext>
+      </Provider>
+    </div>
   );
 }
 
