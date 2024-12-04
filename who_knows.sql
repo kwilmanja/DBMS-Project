@@ -106,10 +106,9 @@ insert into story (title, description, username, published_date, end_passage)
 	values ('story title', 'story description', 'joe', now(), 5),
 	('another story', 'story description', 'joe', now(), 4);
 
-insert into comment values ('joe', 1, 'good story');
+insert into comment values ('joe', 1, 'good story'), ('pozboi', 1, 'mid story');
 
 insert into likes values ('joe', 1), ('pozboi', 1);
-
 
 insert into theme values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure');
 

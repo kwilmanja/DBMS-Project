@@ -53,16 +53,8 @@ const HomeStoryCard = ({story}) => {
                     <div className="card-body">
                         
                         <h6 className="card-subtitle text-muted">Prompt: </h6>
-
-                        <div>
-                            <h6 className="card-subtitle text-muted">Rating: </h6>
-                            <div className="progress ms-1" style={bar2}>
-                                <div className="progress-bar" role="progressbar"
-                                     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                                     style={bar}></div>
-                            </div>
-                            
-                        </div>
+                        <h6 className="card-subtitle text-muted">Likes: {story.num_likes}</h6>
+                      
                     </div>
 
                     <div className="card-body" style={adjustment}>

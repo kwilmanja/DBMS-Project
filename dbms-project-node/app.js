@@ -3,6 +3,7 @@ import cors from 'cors';
 import session from "express-session";
 import UserController from "./user-controller.js";
 import StoryController from './story-controller.js';
+import CommentController from './comment-controller.js';
 
 
 
@@ -17,5 +18,6 @@ app.use(express.json());
 
 UserController(app);
 StoryController(app);
+CommentController(app);
 
 app.listen(4000);

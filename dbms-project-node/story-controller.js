@@ -109,7 +109,17 @@ const StoryController = (app) => {
           });
     };
 
-
+    const getAllStories = async (req, res) => {
+        pool.query('call get_all_stories();', (err, results) => {
+            if (err) {
+                console.error('Error finding stories:', err);
+                res.status(500).json({ error: 'Failed to find stories' });
+                return;
+            } else {
+                res.json(results[0]);
+            }
+          });
+    };
 
     const getStoryMetadata = async (req, res) => {
         const storyId = req.params.id;
@@ -120,7 +130,7 @@ const StoryController = (app) => {
                 res.status(500).json({ error: 'Failed to find story' });
                 return;
             } else {
-                res.json(results[0]);
+                res.json(results[0][0]);
             }
           });
     };
@@ -132,18 +142,6 @@ const StoryController = (app) => {
             if (err) {
                 console.error('Error finding story:', err);
                 res.status(500).json({ error: 'Failed to find story' });
-                return;
-            } else {
-                res.json(results[0]);
-            }
-          });
-    };
-
-    const getAllStories = async (req, res) => {
-        pool.query('call get_all_stories();', (err, results) => {
-            if (err) {
-                console.error('Error finding stories:', err);
-                res.status(500).json({ error: 'Failed to find stories' });
                 return;
             } else {
                 res.json(results[0]);
@@ -164,7 +162,6 @@ const StoryController = (app) => {
     app.get("/api/story/all", getAllStories);
     app.get("/api/story/info/metadata/:id", getStoryMetadata);
     app.get("/api/story/info/passages/:id", getStoryPassages);
-
 
 };
 export default StoryController;
