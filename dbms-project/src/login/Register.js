@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import {registerThunk} from "../users/auth-thunks";
+import {registerThunk, loginThunk} from "../users/auth-thunks";
 function Register() {
     const [credentials, setCredentials] = useState(
         {
             username: '',
         password: '',
+        email: '',
+        phone_no: '',
         role: 'user',
         isAdmin: false
         });
@@ -16,6 +18,7 @@ function Register() {
     const handleRegister = async () => {
         try {
             await dispatch(registerThunk(credentials));
+            await dispatch(loginThunk(credentials));
             navigate("/profile");
         } catch (e) {
             alert(e);
@@ -45,6 +48,32 @@ function Register() {
                            const newCreds = {
                                ...credentials,
                                password: event.target.value,
+                           };
+                           setCredentials(newCreds);
+                       }}
+                />
+            </div>
+            <div>
+                <label>Email</label>
+                <input className="form-control"
+                       type="text" value={credentials.email}
+                       onChange={(event) => {
+                           const newCreds = {
+                               ...credentials,
+                               email: event.target.value,
+                           };
+                           setCredentials(newCreds);
+                       }}
+                />
+            </div>
+            <div>
+                <label>Phone Number</label>
+                <input className="form-control"
+                       type="text" value={credentials.phone_no}
+                       onChange={(event) => {
+                           const newCreds = {
+                               ...credentials,
+                               phone_no: event.target.value,
                            };
                            setCredentials(newCreds);
                        }}

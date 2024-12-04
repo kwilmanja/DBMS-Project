@@ -12,7 +12,6 @@ import {findFollowedThunk, followUserThunk, unfollowUserThunk} from "../follows/
 function Profile() {
     const { username } = useParams();
     const { currentUser } = useSelector((state) => state.auth);
-    const {currentFollowed} = useSelector((state) => state.follows);
 
 
     const [profile, setProfile] = useState({});
@@ -31,31 +30,15 @@ function Profile() {
             let user;
             if(username){
                 user = await authService.findUserByUsername(username);
+                setProfile(user);
+            } else if (currentUser){
+                setProfile(currentUser);
             } else{
-                user = currentUser;
+                navigate("/");
             }
-            setProfile(user);
         }
         fetchData();
-    }, [username, currentUser, currentFollowed]);
-
-
-    const handleFollow = () => {
-        dispatch(followUserThunk(username));
-    }
-
-    const handleUnfollow = () => {
-        dispatch(unfollowUserThunk(username));
-    }
-
-
-    const borderStyle = {
-        // "border-left-style": "solid",
-        // "border-left-width": "4px",
-        // "border-left-color": "blue",
-        // "border-left-radius": "20px",
-        // "padding": "20px"
-    }
+    }, [username, currentUser]);
 
     return (
 
@@ -65,29 +48,17 @@ function Profile() {
                 <div className="row mt-3 mb-3" >
                      <div className="col-8">
                          <h1>{profile.username}'s Profile</h1>
-                         <h4>First Name: {profile.firstName}</h4>
-                         <h4>Last Name: {profile.lastName}</h4>
-                         <h4>Level: {profile.level}</h4>
+                         <h4>Email: {profile.email}</h4>
+                         <h4>Phone Number: {profile.phone_no}</h4>
                          {currentUser && profile &&
                           ((currentUser.username === profile.username) ?
                                   <button className="btn btn-dark" onClick={edit}>Edit</button>
-                                :
-                              (currentFollowed.includes(username)
-                              ?
-                               <button className="btn btn-warning" onClick={handleUnfollow}>Unfollow</button>
-                              :
-                               <button className="btn btn-success" onClick={handleFollow}>Follow</button>
-                          ))
+                                : <h1> Other Profile </h1>)
                          }
 
                      </div>
-
-                    <div className="col-4 d-none d-sm-block" style={borderStyle}>
-                        <FollowerFollowed username={profile.username}/>
-
-                    </div>
                 </div>
-                {/*<UserReviewList username={profile.username}/>*/}
+                {/* <UserReviewList username={profile.username}/> */}
                 </>
             )}
 

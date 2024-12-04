@@ -14,24 +14,6 @@ function CurrentUserContext({ children }) {
         return dispatch(profileThunk());
     };
 
-    const getCurrentUsersFollow = async (user) => {
-        if(user){
-            await dispatch(findFollowerThunk(user.username));
-            await dispatch(findFollowedThunk(user.username));
-        }
-    }
-
-    useEffect(() => {
-        async function fetchData() {
-            if(!currentUser) {
-                const profileAction = await getProfile();
-                getCurrentUsersFollow(profileAction.payload);
-            }
-        }
-        fetchData();
-        console.log("fetching current user")
-    }, [currentUser]);
-
     return children;
 }
 

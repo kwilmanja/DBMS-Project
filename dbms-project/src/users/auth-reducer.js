@@ -11,26 +11,24 @@ const authSlice = createSlice({
                                   name: "auth",
                                   initialState: { currentUser: null },
                                   reducers: {
-                                      [loginThunk.fulfilled]: (state, { payload }) => {
-                                          state.currentUser = payload;
-                                      },
-                                      [logoutThunk.fulfilled]: (state) => {
-                                          state.currentUser = null;
-                                      },
-                                      [profileThunk.fulfilled]: (state, { payload }) => {
-                                          state.currentUser = payload;
-                                      },
-                                      [profileThunk.rejected]: (state, { payload }) => {
-                                          state.currentUser = null;
-                                      },
-                                      [updateUserThunk.fulfilled]: (state, { payload }) => {
-                                          state.currentUser = payload;
-                                      },
-                                      [registerThunk.fulfilled]: (state, { payload }) => {
-                                          state.currentUser = payload;
-                                      },
-
-
                                   },
+                                  extraReducers: (builder) => {
+                                    builder
+                                      .addCase(loginThunk.fulfilled, (state, { payload }) => {
+                                        state.currentUser = payload
+                                      })
+                                      .addCase(logoutThunk.fulfilled, (state) => {
+                                        state.currentUser = null
+                                      })
+                                      .addCase(profileThunk.fulfilled, (state, { payload }) => {
+                                        state.currentUser = payload
+                                      })
+                                      .addCase(profileThunk.rejected, (state) => {
+                                        state.currentUser = null
+                                      })
+                                      .addCase(updateUserThunk.fulfilled, (state, { payload }) => {
+                                        state.currentUser = payload
+                                      });                                      ;
+                                  }
                               });
 export default authSlice.reducer;

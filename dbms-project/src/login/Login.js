@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../users/auth-thunks";
-import {findFollowedThunk, findFollowerThunk} from "../follows/follows-thunks";
 function Login() {
 
     const [username, setUsername] = useState("");
