@@ -1,15 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./users/auth-reducer.js";
-import followsReducer from "./follows/follows-reducer.js";
-import reviewsReducer from "./reviews/review-reducer.js";
-import trailsReducer from "./trails/trail-reducer.js";
+import storiesReducer from "./stories/stories-reducer.js";
 
 const store = configureStore({
                                  reducer: {
                                      auth: authReducer,
-                                     follows: followsReducer,
-                                     reviews: reviewsReducer,
-                                     trails: trailsReducer,
+                                     stories: storiesReducer,
                                  },
                              });
 export default store;

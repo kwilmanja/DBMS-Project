@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {useNavigate, useParams} from "react-router";
-import FollowerFollowed from "../follows/FollowerFollowed";
-import UserReviewList from "./UserReviewList";
-import {findAllReviewsThunk} from "../reviews/review-thunks";
 import * as authService from "../users/auth-service";
-import {findFollowedThunk, followUserThunk, unfollowUserThunk} from "../follows/follows-thunks";
 
 
 
@@ -44,7 +40,6 @@ function Profile() {
 
         <div>
             {profile && (
-                <>
                 <div className="row mt-3 mb-3" >
                      <div className="col-8">
                          <h1>{profile.username}'s Profile</h1>
@@ -58,8 +53,6 @@ function Profile() {
 
                      </div>
                 </div>
-                {/* <UserReviewList username={profile.username}/> */}
-                </>
             )}
 
         </div>

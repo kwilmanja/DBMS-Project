@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {useNavigate, useParams} from "react-router";
 import {findAllUsersThunk, profileThunk} from "../users/auth-thunks";
-import {findAllReviewsThunk} from "../reviews/review-thunks";
 
 
 function Admin() {
@@ -18,17 +17,17 @@ function Admin() {
 
     useEffect(() => {
         async function fetchData() {
-            try {
+            // try {
 
-                const profilesAction = await dispatch(findAllUsersThunk());
-                setProfiles(profilesAction.payload);
+            //     const profilesAction = await dispatch(findAllUsersThunk());
+            //     setProfiles(profilesAction.payload);
 
-                const reviewsAction = await dispatch(findAllReviewsThunk());
-                setReviews(reviewsAction.payload);
+            //     const reviewsAction = await dispatch(findAllReviewsThunk());
+            //     setReviews(reviewsAction.payload);
 
-            } catch (error) {
-                console.error(error);
-            }
+            // } catch (error) {
+            //     console.error(error);
+            // }
         }
         fetchData();
     }, []);

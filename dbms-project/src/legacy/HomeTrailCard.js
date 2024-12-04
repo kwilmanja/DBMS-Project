@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import DetailsReview from "../details/DetailsReview";
 import {findAllReviewsThunk} from "../reviews/review-thunks";
-import HomeReview from "./HomeReview";
+import HomeReview from "../home/HomeReview";
 import * as authService from "../users/auth-service";
 const HomeTrailCard = ({trail, reviews}) => {
 

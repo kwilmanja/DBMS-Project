@@ -26,9 +26,6 @@ function Nav() {
                                 <span className="visually-hidden">(current)</span>
 
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/search">Search</Link>
-                            </li>
 
                             {!currentUser &&
                              <li className="nav-item">

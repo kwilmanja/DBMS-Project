@@ -10,7 +10,7 @@ import {
     getAllStories,
     getStoryMetadata,
     getStoryPassages
-} from "./stories-thunks.js";
+} from "./stories-service.js";
 
 
 export const createPromptThunk = createAsyncThunk(
