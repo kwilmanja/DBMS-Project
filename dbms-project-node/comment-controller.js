@@ -19,7 +19,7 @@ const CommentController = (app) => {
     const createComment = async (req, res) => {
         let currentUser = req.session["currentUser"];
         if (!currentUser) {
-            res.sendStatus(404);
+            res.status(500).json({ error: 'Not signed in' });
             return;
         }
         const username = currentUser.username;
@@ -40,12 +40,12 @@ const CommentController = (app) => {
     const updateComment = async (req, res) => {
         let currentUser = req.session["currentUser"];
         if (!currentUser) {
-            res.sendStatus(404);
+            res.status(500).json({ error: 'Not signed in' });
             return;
         }
         const username = currentUser.username;
         const text = req.body.text;
-        const storyId = req.params.storyId;
+        const storyId = req.body.storyId;
         pool.query('update comment set text = ? where username = ? and story_id = ?;', 
             [text, username, storyId], (err, results) => {
             if (err) {
@@ -61,7 +61,7 @@ const CommentController = (app) => {
     const createLike = async (req, res) => {
         let currentUser = req.session["currentUser"];
         if (!currentUser) {
-            res.sendStatus(404);
+            res.status(500).json({ error: 'Not signed in' });
             return;
         }
         const username = currentUser.username;
@@ -81,7 +81,7 @@ const CommentController = (app) => {
     const deleteLike = async (req, res) => {
         let currentUser = req.session["currentUser"];
         if (!currentUser) {
-            res.sendStatus(404);
+            res.status(500).json({ error: 'Not signed in' });
             return;
         }
         const username = currentUser.username;
@@ -102,7 +102,7 @@ const CommentController = (app) => {
     app.post("/api/comments/create", createComment);
     app.put("/api/comments/update", updateComment);
 
-    app.post("/api/likes/create/:id", createLike);
+    app.post("/api/likes/create/:storyId", createLike);
     app.delete("/api/likes/delete/:storyId", deleteLike);
 
 };
