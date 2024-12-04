@@ -113,7 +113,7 @@ const StoryController = (app) => {
 
     const getStoryMetadata = async (req, res) => {
         const storyId = req.params.id;
-        pool.query('select * from story where story_id = ?;', 
+        pool.query('call get_story_metadata(?);', 
             [storyId], (err, results) => {
             if (err) {
                 console.error('Error finding story:', err);
@@ -140,13 +140,13 @@ const StoryController = (app) => {
     };
 
     const getAllStories = async (req, res) => {
-        pool.query('select * from story;', (err, results) => {
+        pool.query('call get_all_stories();', (err, results) => {
             if (err) {
                 console.error('Error finding stories:', err);
                 res.status(500).json({ error: 'Failed to find stories' });
                 return;
             } else {
-                res.json(results);
+                res.json(results[0]);
             }
           });
     };

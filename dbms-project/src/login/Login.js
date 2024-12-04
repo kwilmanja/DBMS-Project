@@ -14,7 +14,12 @@ function Login() {
 
     const handleLogin = async () => {
         
-        await dispatch(loginThunk({ username, password }));
+        const loginAction = await dispatch(loginThunk({ username, password }));
+        if(loginAction.error){
+            setFailed(true);
+            return;
+        }
+
         navigate("/profile");
     };
 
