@@ -1,6 +1,4 @@
-import * as usersDao from "./users-dao.js";
-import * as dao from "./users-dao.js";
-import pool from "../pool.js";
+import pool from "./pool.js";
 
 const UserController = (app) => {
 
@@ -11,7 +9,8 @@ const UserController = (app) => {
         const email = req.body.username;
         const phone = req.body.password;
 
-        pool.query('insert into account values (?, ?, ?, ?);', [username, email, phone, password], (err, results) => {
+        pool.query('insert into account values (?, ?, ?, ?);', 
+            [username, email, phone, password], (err, results) => {
             if (err) {
                 console.error('Error creating user:', err);
                 res.status(500).json({ error: 'Failed to create user' });
@@ -25,7 +24,8 @@ const UserController = (app) => {
     const login = async (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
-        pool.query('select * from account where username = ? AND password = ?;', [username, password], (err, results) => {
+        pool.query('select * from account where username = ? AND password = ?;', 
+            [username, password], (err, results) => {
             if (err) {
                 console.error('Error finding user:', err);
                 res.status(500).json({ error: 'Failed to login user' });
@@ -45,7 +45,8 @@ const UserController = (app) => {
         }
         const username = currentUser.username;
         const password = currentUser.password;
-        pool.query('select * from account where username = ? AND password = ?;', [username, password], (err, results) => {
+        pool.query('select * from account where username = ? AND password = ?;', 
+            [username, password], (err, results) => {
             if (err) {
                 console.error('Error finding user:', err);
                 res.status(500).json({ error: 'Failed to login user' });
@@ -68,7 +69,8 @@ const UserController = (app) => {
         const email = user.email;
         const phone = user.phone;
 
-        pool.query('update account set email = ?, phone_no = ? where username = ?;', [email, phone, req.params.username], (err, results) => {
+        pool.query('update account set email = ?, phone_no = ? where username = ?;', 
+            [email, phone, req.params.username], (err, results) => {
             if (err) {
                 console.error('Error updating user:', err);
                 res.status(500).json({ error: 'Failed to update user' });
@@ -82,7 +84,8 @@ const UserController = (app) => {
     const findProfileByUsername = async (req, res) => {
 
         const username = req.params.username;
-        pool.query('select username, email, phone_no from account where username = ?;', [username], (err, results) => {
+        pool.query('select username, email, phone_no from account where username = ?;', 
+            [username], (err, results) => {
             if (err) {
                 console.error('Error finding user:', err);
                 res.status(500).json({ error: 'Failed to login user' });
