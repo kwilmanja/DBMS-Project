@@ -10,24 +10,16 @@ CREATE TABLE account (
 );
 
 
-insert into account values 
-	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
-	('joe', 'joe@gmail.com', '7202444008', 'world');	
-
-
 
 CREATE TABLE prompt (
 	id INT primary key AUTO_INCREMENT,
     name VARCHAR(128) not null,
     description VARCHAR(512),
     username VARCHAR(100) NOT NULL,
-    FOREIGN KEY (username) REFERENCES account(username) # creates relationship
+    FOREIGN KEY (username) REFERENCES account(username) 
 		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-insert into prompt (name, description, username)
-	values ('Prompt1', 'a prompt about something', 'joe'),
-	('Prompt2', 'another prompt about something', 'joe');	
 
 CREATE TABLE passage (
 	id INT primary key AUTO_INCREMENT,
@@ -43,15 +35,6 @@ CREATE TABLE passage (
 	);
 
 
-insert into passage (text, username, previous_passage, prompt)
-	values ('hhhhhhhhhhhhh', 'joe', null, 1),
-	('gggggggggggggg', 'joe', null, 1);
-
-insert into passage (text, username, previous_passage, prompt)
-	values ('jjjjjjjjjjj', 'pozboi', 1, null),
-	('kkkkkkkkkkkk', 'pozboi', 1, null),
-	('llllllllllll', 'joe', 4, null);
-
 CREATE TABLE story (
 	story_id INT primary key AUTO_INCREMENT,
 	title VARCHAR(256) NOT NULL,
@@ -64,6 +47,23 @@ CREATE TABLE story (
     FOREIGN KEY (username) REFERENCES account(username) # publishes relationship
 		ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+insert into account values 
+	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
+	('joe', 'joe@gmail.com', '7202444008', 'world');	
+
+insert into prompt (name, description, username)
+	values ('Prompt1', 'a prompt about something', 'joe'),
+	('Prompt2', 'another prompt about something', 'joe');
+
+insert into passage (text, username, previous_passage, prompt)
+	values ('hhhhhhhhhhhhh', 'joe', null, 1),
+	('gggggggggggggg', 'joe', null, 1);
+
+insert into passage (text, username, previous_passage, prompt)
+	values ('jjjjjjjjjjj', 'pozboi', 1, null),
+	('kkkkkkkkkkkk', 'pozboi', 1, null),
+	('llllllllllll', 'joe', 4, null);
 
 insert into story (title, description, username, published_date, end_passage)
 	values ('story title', 'story description', 'joe', now(), 5);
