@@ -26,8 +26,7 @@ CREATE TABLE passage (
 	text VARCHAR(512) NOT NULL,
     username VARCHAR(100) not null,
     previous_passage INT,
-    prompt int,
-	check (prompt is not null or previous_passage is not null),
+    prompt int not null,
     FOREIGN KEY (username) REFERENCES account(username)
 		ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (prompt) REFERENCES prompt(id),
@@ -87,7 +86,8 @@ CREATE TABLE describe_story (
 
 insert into account values 
 	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
-	('joe', 'joe@gmail.com', '7202444008', 'world');	
+	('joe', 'joe@gmail.com', '7202444008', 'world'),
+	('a', 'a', 'a', 'a');	
 
 insert into prompt (name, description, username)
 	values ('Prompt1', 'a prompt about something', 'joe'),
@@ -98,9 +98,9 @@ insert into passage (text, username, previous_passage, prompt)
 	('gggggggggggggg', 'joe', null, 1);
 
 insert into passage (text, username, previous_passage, prompt)
-	values ('jjjjjjjjjjj', 'pozboi', 1, null),
-	('kkkkkkkkkkkk', 'pozboi', 1, null),
-	('llllllllllll', 'joe', 4, null);
+	values ('jjjjjjjjjjj', 'pozboi', 1, 1),
+	('kkkkkkkkkkkk', 'pozboi', 1, 1),
+	('llllllllllll', 'joe', 4, 1);
 
 insert into story (title, description, username, published_date, end_passage)
 	values ('story title', 'story description', 'joe', now(), 5),
@@ -171,6 +171,22 @@ begin
 	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes 
 	from story s
 	left join likes l on l.story_id = s.story_id
+	group by s.story_id;
+end //
+DELIMITER ;
+
+drop procedure if exists get_stories_by_prompt_id;
+DELIMITER //
+create procedure get_stories_by_prompt_id
+(prompt_id_p int)
+begin
+	select s.*, 
+	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes
+	from story s
+	left join likes l on l.story_id = s.story_id
+	join passage p on p.id = s.end_passage
+	join prompt pr on pr.id = p.prompt
+	where pr.id = prompt_id_p
 	group by s.story_id;
 end //
 DELIMITER ;

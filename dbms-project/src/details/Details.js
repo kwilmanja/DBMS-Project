@@ -6,19 +6,20 @@ import { getStoryMetadataThunk, getStoryPassagesThunk } from "../stories/stories
 import { getStoryPassages } from "../stories/stories-service";
 import DetailsPassageCard from "./DetailsPassageCard.js";
 import { header } from "../style/styles.js";
+import { createCommentThunk, getStoryCommentsThunk } from "../comments/comment-thunks.js";
+import DetailsReview from "./DetailsReview.js";
 
 
 function Details() {
 
     const {currentUser} = useSelector((state) => state.auth);
-    // //const {listedReviews} = useSelector((state) => state.reviews);
+    const {comments} = useSelector((state) => state.comments);
 
     const {storyId} = useParams();
     const [story, setStory] = useState();
     const [passages, setPassages] = useState();
 
     const [content, setContent] = useState('');
-    // const [privacy, setPrivacy] = useState(true);
 
     const dispatch = useDispatch();
 
@@ -30,6 +31,7 @@ function Details() {
             const passagesAction = await dispatch(getStoryPassagesThunk(storyId));
             const passages = passagesAction.payload.slice();            
             setPassages(passages);
+            await dispatch(getStoryCommentsThunk(storyId));
         }
         fetchData();
     }, []);
@@ -40,20 +42,17 @@ function Details() {
             return;
         }
 
-        // const review ={
-        //     content: content,
-        //     username: currentUser.username,
-        //     trailID: trailID,
-        //     trailName: trail.name,
-        //     public: privacy
-        // }
-
+        const review ={
+            storyId: story.story_id,
+            text: content
+        }
+        dispatch(createCommentThunk(review));
         setContent('');
     }
 
 
     const textboxStyle = {
-        "width": "70%"
+        "width": "100%"
     }
 
     const privacyStyle = {
@@ -90,7 +89,7 @@ function Details() {
 
                     <hr/>
 
-                    {/* <div>
+                    <div>
                         {currentUser && (
                             <div>
                                 <div>
@@ -104,23 +103,32 @@ function Details() {
                                     }}
                                 />
                             </div>
+
                                 <div style={textboxStyle}>
                                     <div>
+
                                         <button type="button" className="btn btn-primary d-inline" onClick={post}>
                                                 Post Review</button>
                                     </div>
+
+
+
                                 </div>
+
+
+
                             </div>
+
                         )}
-                    </div> */}
+                    </div>
 
                     <hr/>
 
-                    {/* <div>
-                        {listedReviews.map(review =>
-                            <DetailsReview review={review}/>
+                    <div>
+                        {comments.map(comment =>
+                                <DetailsReview comment={comment}/>    
                         )}
-                    </div>                      */}
+                    </div>                     
                 </div>
 
 

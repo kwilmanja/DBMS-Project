@@ -9,7 +9,8 @@ import {
     deleteStory,
     getAllStories,
     getStoryMetadata,
-    getStoryPassages
+    getStoryPassages,
+    getAllStoriesByPromptId
 } from "./stories-service.js";
 
 
@@ -63,6 +64,10 @@ export const getStoryPassagesThunk = createAsyncThunk(
     async (storyId) => await getStoryPassages(storyId)
 )
 
+export const getAllStoriesByPromptIdThunk = createAsyncThunk(
+    'getAllStoriesByPromptId',
+    async (promptId) => await getAllStoriesByPromptId(promptId)
+)
 
 
 

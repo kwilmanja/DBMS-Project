@@ -149,6 +149,19 @@ const StoryController = (app) => {
           });
     };
 
+    const getAllStoriesByPromptId = async (req, res) => {
+        const promptId = req.params.id;
+        pool.query('call get_stories_by_prompt_id(?);', 
+            [promptId], (err, results) => {
+            if (err) {
+                console.error('Error finding stories associated with prompt:', err);
+                res.status(500).json({ error: 'Failed to find stories associated with prompt' });
+                return;
+            } else {
+                res.json(results[0]);
+            }
+          });
+    };
 
     app.post("/api/prompt/create", createPrompt);
     app.get("/api/prompt/info/:id", getPromptById);
@@ -162,6 +175,9 @@ const StoryController = (app) => {
     app.get("/api/story/all", getAllStories);
     app.get("/api/story/info/metadata/:id", getStoryMetadata);
     app.get("/api/story/info/passages/:id", getStoryPassages);
+
+
+    app.get("/api/story/all/prompt/:id", getAllStoriesByPromptId)
 
 };
 export default StoryController;
