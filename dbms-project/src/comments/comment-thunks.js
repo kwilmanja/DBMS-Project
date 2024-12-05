@@ -1,4 +1,4 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as commentsService from "./comments-service";
 
 
@@ -21,6 +21,12 @@ export const deleteCommentThunk = createAsyncThunk(
     "deleteCommentThunk", async (commentId) => {
         return await commentsService.deleteComment(commentId);
     });
+
+export const getStoryLikesThunk = createAsyncThunk(
+    "getStoryLikes", async (storyId) => {
+        return await commentsService.getStoryLikes(storyId);
+    }
+)
 
 export const createLikeThunk = createAsyncThunk(
     "createLike", async (storyId) => {

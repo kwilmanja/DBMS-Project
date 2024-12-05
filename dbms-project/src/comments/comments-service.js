@@ -25,6 +25,11 @@ export const deleteComment = async (commentId) => {
     return response.data;
 };
 
+export const getStoryLikes = async (storyId) => {
+    const response = await api.get(`${LIKES_URL}/${storyId}`)
+    return response.data;
+}
+
 export const createLike = async (storyId) => {
     const response = await api.post(`${LIKES_URL}/create/${storyId}`);
     return response.data;
