@@ -48,7 +48,7 @@ const DetailsPassageCard = ({passage}) => {
                         
                         {currentUser ? 
                             <Link to={'/make/' + passage.id} style={link}>
-                                <h6 className="card-subtitle">{passage.text} EDIT </h6>
+                                <h6 className="card-subtitle">{passage.text}</h6>
                             </Link>
                             :
                             <h6 className="card-subtitle">{passage.text} </h6>

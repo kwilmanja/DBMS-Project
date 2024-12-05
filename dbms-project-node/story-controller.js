@@ -121,6 +121,7 @@ const StoryController = (app) => {
 
         const title = req.body.title;
         const description = req.body.description;
+
         pool.query('call publish_story(?, ?, ?, ?, ?, ?);', 
             [text, username, previousPassage, prompt, description, title], (err, results) => {
             if (err) {
@@ -128,7 +129,22 @@ const StoryController = (app) => {
                 res.status(500).json({ error: 'Failed to create story' });
                 return;
             } else {
-                res.json(results[0][0]);
+
+                const themes = req.body.themes;
+                const storyId = results[0][0].id;
+
+                const query = "insert into describe_story (story_id, theme) values " +
+                "(" + storyId + ", \'" + themes.join("\'), (" + storyId + ", \'") + "\');";
+
+                pool.query(query, [], (err) => {
+                    if (err) {
+                        console.error('Error adding themes:', err);
+                        res.status(500).json({ error: 'Failed to add themes' });
+                        return;
+                    } else {
+                        res.json(storyId);
+                    }
+                  });
             }
           });
     };
@@ -201,6 +217,19 @@ const StoryController = (app) => {
           });
     };
 
+    const getAllThemes = async (req, res) => {
+        pool.query('select * from theme;', 
+            [], (err, results) => {
+            if (err) {
+                console.error('Error finding themes:', err);
+                res.status(500).json({ error: 'Failed to find themes' });
+                return;
+            } else {
+                res.json(results);
+            }
+          });
+    };
+
     app.post("/api/prompt/create", createPrompt);
     app.get("/api/prompt/info/:id", getPromptById);
     app.get("/api/prompt/all", getAllPrompts);
@@ -214,9 +243,8 @@ const StoryController = (app) => {
     app.get("/api/story/all", getAllStories);
     app.get("/api/story/info/metadata/:id", getStoryMetadata);
     app.get("/api/story/info/passages/:id", getStoryPassages);
-
-
     app.get("/api/story/all/prompt/:id", getAllStoriesByPromptId)
+    app.get("/api/story/themes", getAllThemes);
 
 
 };

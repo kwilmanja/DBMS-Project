@@ -65,3 +65,8 @@ export const getAllStoriesByPromptId = async (promptId) => {
     const response = await api.get(`${STORY_API}/all/prompt/${promptId}`);
     return response.data;
 }
+
+export const getAllThemes = async () => {
+    const response = await api.get(`${STORY_API}/themes`);
+    return response.data;
+}

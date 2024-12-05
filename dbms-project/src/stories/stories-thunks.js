@@ -11,7 +11,8 @@ import {
     getStoryMetadata,
     getStoryPassages,
     getAllStoriesByPromptId,
-    getNextPassages
+    getNextPassages,
+    getAllThemes
 } from "./stories-service.js";
 
 
@@ -75,7 +76,8 @@ export const getAllStoriesByPromptIdThunk = createAsyncThunk(
     async (promptId) => await getAllStoriesByPromptId(promptId)
 )
 
-
-
-
+export const getAllThemesThunk = createAsyncThunk(
+    'getAllThemes',
+    async () => await getAllThemes()
+)
 

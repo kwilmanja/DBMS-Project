@@ -86,7 +86,14 @@ function Details() {
                     <div className="col-auto col-md-10 col-lg-8 col-xl-6">
                         <h3 className="text-center" style={header}>{story.title} </h3>
 
+                        {currentUser ?
+                            <p className="text-center">Click a passage below to begin creating your own story!</p>
+                            :
+                            <p className="text-center">Login to create your own story!</p>
+                        }
 
+
+                    
 
 
 

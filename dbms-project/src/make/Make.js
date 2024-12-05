@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import MakeStoryCard from "./MakeStoryCard";
 import { getPromptByIdThunk, getPassageByIdThunk, 
     createPassageThunk, getNextPassagesThunk, 
-    publishStoryThunk} from "../stories/stories-thunks";
+    publishStoryThunk,
+    getAllThemesThunk} from "../stories/stories-thunks";
 import { useNavigate, useParams } from "react-router-dom";
 import {Link} from "react-router-dom";
 import { getNextPassages } from "../stories/stories-service";
@@ -24,6 +25,9 @@ export default function Make() {
     const [publishing, setPublishing] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedThemes, setSelectedThemes] = useState([]);
+    const [themes, setThemes] = useState([]);
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,6 +47,9 @@ export default function Make() {
             }
     
             dispatch(getNextPassagesThunk({previousPassageId: passageId, promptId: promptId}));
+
+            const themesAction = await dispatch(getAllThemesThunk())
+            setThemes(themesAction.payload.map((themeObject) => (themeObject.name)));
 
             setContent('');
             setFailed(false);
@@ -98,13 +105,25 @@ export default function Make() {
                 passage: newPassage,
                 title: title,
                 description: description,
+                themes: selectedThemes
             };
 
             const publishAction = await dispatch(publishStoryThunk(passageStory));
-            navigate('/details/' + publishAction.payload.id);
+            navigate('/details/' + publishAction.payload);
         } catch (error){
             setFailed(true);
+            setPublishing(false);
         }
+    };
+
+
+    const handleCheckbox = (e) => {
+        const { value, checked } = e.target;
+        setSelectedThemes((prev) =>
+            checked ? [...prev, value] 
+            : 
+            prev.filter((option) => option !== value)
+        );
     };
 
 
@@ -167,6 +186,26 @@ export default function Make() {
                         placeholder="Enter a description (required)"
                         required
                     />
+                    </div>
+
+                    <div>
+                        <h3>Select Themes:</h3>
+                        <form>
+                            {themes.map((theme) => (
+                            <div className="form-check">
+                                <input
+                                type="checkbox"
+                                value={theme}
+                                checked={selectedThemes.includes(theme)}
+                                onChange={handleCheckbox}
+                                className="form-check-input"/>
+
+                                <label className="form-check-label">
+                                    {theme}
+                                </label>
+                            </div>
+                            ))}
+                        </form>
                     </div>
 
 
