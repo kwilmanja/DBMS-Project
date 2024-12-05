@@ -16,7 +16,7 @@ const PromptCard = ({ prompt }) => {
   }
 
   const bar = {
-    "width": prompt.id / 0.05 + '%'
+    "width": 100 / 0.05 + '%'
   }
 
   const bar2 = {
@@ -28,10 +28,7 @@ const PromptCard = ({ prompt }) => {
     "width": "100%",
   }
 
-  const adjustment = {
-    "position": "relative",
-    "padding-top": "20px"
-  }
+
 
   const link = {
     "text-decoration": "none",
@@ -50,21 +47,15 @@ const PromptCard = ({ prompt }) => {
               <div className="card-body">
 
                 <div>
-                  <h6 className="card-subtitle text-muted">Rating: </h6>
-                  <div className="progress ms-1" style={bar2}>
-                    <div className="progress-bar" role="progressbar"
-                      aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
-                      style={bar}></div>
+
+                  <h6 className="card-subtitle text-muted">Description: </h6>
+                  <div>
+                    <h6>{prompt.description}</h6>
                   </div>
 
-                  <h6 className="card-subtitle text-muted" style={adjustment}>Description: </h6>
-                  <div className="prompt-description">
-                    <h6 className="prompt-desc-text">{prompt.description}</h6>
-                  </div>
-
-                  <h6 className="card-subtitle text-muted" style={adjustment}>Created by: </h6>
-                  <div className="prompt-creator">
-                    <h6 className="prompt-creator-text">{prompt.username}</h6>
+                  <h6 className="card-subtitle text-muted" >Created by: </h6>
+                  <div>
+                    <h6>{prompt.username}</h6>
                   </div>
 
                 </div>

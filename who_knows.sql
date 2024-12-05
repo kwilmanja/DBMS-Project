@@ -133,10 +133,11 @@ CREATE VIEW full_story_data AS
 select s.*, 
 	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes,
 	t.themes,
-	pr.name as prompt
+	pr.name as prompt_name,
+	pr.id as prompt_id
 	from story s
 	left join likes l on l.story_id = s.story_id
-	left join (select story_id, group_concat(theme separator '-') as themes
+	left join (select story_id, group_concat(theme separator ', ') as themes
 		from describe_story group by story_id) as t
 		on t.story_id = s.story_id
 	join passage p on p.id = s.end_passage
@@ -233,7 +234,7 @@ create procedure get_stories_by_prompt_id
 (prompt_id_p int)
 begin
 	select * from full_story_data
-	where prompt = prompt_id_p;
+	where prompt_id = prompt_id_p;
 end //
 DELIMITER ;
 
