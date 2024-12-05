@@ -51,14 +51,28 @@ const HomeStoryCard = ({story}) => {
                     </div>
 
                     <div className="card-body">
-                        
-                        <h6 className="card-subtitle text-muted">Prompt: </h6>
-                        <h6 className="card-subtitle text-muted">Likes: {story.num_likes}</h6>
-                      
-                    </div>
 
-                    <div className="card-body" style={adjustment}>
-                        <p className="card-text">{story.description}</p>
+                        <div className="row">
+                            <div className="d-flex col">
+                                <h6 className="text-muted" style={{marginRight: '8px'}}>Created By:</h6>
+                                <h6>{story.username}</h6>
+                            </div>
+                            <div className="d-flex col">
+                                <h6 className="text-muted" style={{marginRight: '8px'}}>Likes:</h6>
+                                <h6>{story.num_likes}</h6>
+                            </div>
+                        </div>
+
+                        <div className="d-flex">
+                            <h6 className="text-muted" style={{marginRight: '8px'}}>Prompt: </h6>
+                            <h6 className="ml-">{story.prompt_name}</h6>
+                        </div>
+                        <div className="d-flex">
+                            <h6 className="text-muted" style={{marginRight: '8px'}}>Themes:</h6>
+                            <h6>{story.themes}</h6>
+                        </div>
+                    
+                        <p className="card-text">{story.description} description description description description description description description description description description description description description description description description description description description </p>
                     </div>
                 </div>
             </div>
