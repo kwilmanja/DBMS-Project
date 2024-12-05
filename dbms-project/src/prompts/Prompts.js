@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
@@ -11,6 +12,7 @@ export default function Prompts() {
     const [prompts, setPrompts] = useState([]);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchData() {
@@ -32,10 +34,18 @@ export default function Prompts() {
         fetchData();
     }, []);
 
+    const handleCreatePromptClick = () => {
+        navigate("/prompts/create");
+    }
+
     const header = {
         "color": "white",
         "text-shadow":
             "-3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000"
+    }
+
+    const adjustment = {
+        "bottom": "-30px"
     }
 
     return (
@@ -49,7 +59,15 @@ export default function Prompts() {
 
                 <h1 className="text-center" style={header}>Prompts:</h1>
 
-                <div>
+                <div style={adjustment}>
+                    {currentUser &&
+                        <button className="create-prompt" onClick={handleCreatePromptClick}>
+                            Create new prompt
+                        </button>
+                    }
+                </div>
+
+                <div style={adjustment}>
                     {prompts && prompts.map((prompt) =>
                         <PromptCard prompt={prompt} />
                     )}
