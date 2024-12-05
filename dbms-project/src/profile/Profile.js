@@ -41,7 +41,7 @@ function Profile() {
             } else if (currentUser) {
                 setProfile(currentUser);
                 content = await authService.getUserContent(currentUser.username);
-                setStories(content.stories);
+                setStories(content.stories[0]);
                 setPassages(content.passages);
                 setPrompts(content.prompts);
             } else {
