@@ -56,6 +56,11 @@ export default function PromptStories() {
 
   return (stories && prompt &&
     <div className="row" style={background}>
+
+      <div className="col-md-1 col-lg-2 col-xl-3">
+
+      </div>
+
       <div className="col-auto col-md-10 col-lg-8 col-xl-6">
         <h1 className="text-center" style={header}>
           {prompt.name}
@@ -74,6 +79,10 @@ export default function PromptStories() {
             <HomeStoryCard key={story.id} story={story} />
           )}
         </div>
+
+      </div>
+
+      <div className="col-md-1 col-lg-2 col-xl-3">
 
       </div>
 
