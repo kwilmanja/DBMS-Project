@@ -208,6 +208,20 @@ begin
 end //
 DELIMITER ;
 
+drop procedure if exists get_stories_by_username;
+DELIMITER //
+create procedure get_stories_by_username
+(username_p varchar(100))
+begin
+	select s.*, 
+	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes
+	from story s
+	left join likes l on l.story_id = s.story_id
+	join account a on a.username = s.username
+	where a.username = username_p
+	group by s.story_id;
+end //
+DELIMITER ;
 
 drop procedure if exists publish_story;
 DELIMITER //
