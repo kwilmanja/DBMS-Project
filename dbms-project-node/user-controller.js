@@ -134,7 +134,7 @@ const UserController = (app) => {
             });
 
             const promptsPromise = new Promise((resolve, reject) => {
-                pool.query('select * from prompt where username = ?', [username], (err, results) => {
+                pool.query('select * from full_prompt_data where username = ?', [username], (err, results) => {
                     if (err) reject(err);
                     else resolve(results);
                 });

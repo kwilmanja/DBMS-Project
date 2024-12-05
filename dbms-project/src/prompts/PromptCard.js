@@ -7,28 +7,13 @@ const PromptCard = ({ prompt }) => {
 
   const { currentUser } = useSelector((state) => state.auth);
 
-  const photoSize = {
-    "height": "200px",
-  };
-
   const inline = {
     "display": "inline"
-  }
-
-  const bar = {
-    "width": 100 / 0.05 + '%'
-  }
-
-  const bar2 = {
-    "width": '40%',
-    // "display": "inline"
   }
 
   const card = {
     "width": "100%",
   }
-
-
 
   const link = {
     "text-decoration": "none",
@@ -46,19 +31,23 @@ const PromptCard = ({ prompt }) => {
               </div>
               <div className="card-body">
 
-                <div>
+                <div className="d-flex">
+                  <h6 className="text-muted" style={{ marginRight: '8px' }}>Description: </h6>
+                  <h6 className="ml-">{prompt.description}</h6>
+                </div>
 
-                  <h6 className="card-subtitle text-muted">Description: </h6>
-                  <div>
-                    <h6>{prompt.description}</h6>
-                  </div>
+                <div className="d-flex">
+                  <h6 className="text-muted" style={{ marginRight: '8px' }}>Genres:</h6>
+                  <h6>{prompt.genres}</h6>
+                </div>
 
-                  <h6 className="card-subtitle text-muted" >Created by: </h6>
-                  <div>
+                <div className="row">
+                  <div className="d-flex col">
+                    <h6 className="text-muted" style={{ marginRight: '8px' }}>Created By:</h6>
                     <h6>{prompt.username}</h6>
                   </div>
-
                 </div>
+
               </div>
             </div>
           </Link>
