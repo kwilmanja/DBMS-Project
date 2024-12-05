@@ -91,7 +91,7 @@ const StoryController = (app) => {
             });
         } else {
             const promptId = req.body.promptId;
-            pool.query('select * from passage where prompt = ?;', 
+            pool.query('select * from passage where prompt = ? and previous_passage is NULL;', 
                 [promptId], (err, results) => {
                 if (err) {
                     console.error('Error finding passage:', err);
