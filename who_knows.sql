@@ -84,6 +84,20 @@ CREATE TABLE describe_story (
 		ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
+CREATE TABLE genre (
+	name VARCHAR(64) PRIMARY KEY
+);
+
+CREATE TABLE describe_prompt (
+	prompt_id INT,
+    genre VARCHAR(64),
+    PRIMARY KEY (prompt_id, genre),
+    FOREIGN KEY (prompt_id) REFERENCES prompt(id)
+		ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (genre) REFERENCES genre(name)
+		ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
 
 insert into account values 
 	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
@@ -111,22 +125,9 @@ insert into comment (username, story_id, text) values ('joe', 1, 'good story'), 
 
 insert into likes values ('joe', 1), ('pozboi', 1);
 
-insert into theme values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure');
+insert into theme values ('Survival'), ('Family'), ('Love'), ('Coming-of-Age'), ('Friendship'), ('Good and Evil');
 
-
--- CREATE TABLE genre (
--- 	name VARCHAR(64) PRIMARY KEY
--- );
--- 
--- CREATE TABLE describe_prompt (
--- 	prompt_id INT,
---     genre_name VARCHAR(64),
---     PRIMARY KEY (prompt_id, genre_name),
---     FOREIGN KEY (prompt_id) REFERENCES prompt(prompt_id)
--- 		ON UPDATE CASCADE ON DELETE CASCADE,
--- 	FOREIGN KEY (genre_name) REFERENCES genre(name)
--- 		ON UPDATE RESTRICT ON DELETE RESTRICT
--- );
+insert into genre values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure'), ('Sci-fi'), ('Non-Fiction');
 
 
 
@@ -227,5 +228,34 @@ begin
 
 	SELECT LAST_INSERT_ID() as id;
 
+end //
+DELIMITER ;
+
+drop procedure if exists create_prompt;
+DELIMITER //
+create procedure create_prompt
+(name_p varchar(128), description_p varchar(512), username_p varchar(100))
+begin
+	
+	insert into prompt (name, description, username)
+	values (name_p, description_p, username_p);
+
+	SELECT LAST_INSERT_ID() as id;
+
+end //
+DELIMITER ;
+
+drop procedure if exists get_stories_by_username;
+DELIMITER //
+create procedure get_stories_by_username
+(username_p varchar(100))
+begin
+	select s.*, 
+	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes
+	from story s
+	left join likes l on l.story_id = s.story_id
+	join account a on a.username = s.username
+	where a.username = username_p
+	group by s.story_id;
 end //
 DELIMITER ;
