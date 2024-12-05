@@ -49,9 +49,6 @@ function Register() {
             }else if(credentials.email.length === 0){
                 setInvalid("Email must not be blank");
                 return;
-            } else if (credentials.phone_no.length === 0){
-                setInvalid("Phone number must not be blank");
-                return;
             }
             
 
