@@ -50,5 +50,13 @@ use stories;
 -- 	values ('hhhhhhhhhhhhh', 'joe', null, 1);
 -- 
 -- SELECT LAST_INSERT_ID();
-select * from passage;
+-- select * from account;
+
+
+
+call publish_story('ooioojoo', 'joe', 4, 1, 'opopop', 'popopo');
+
+select * from story;
+-- 
+-- select * from passage;
 
