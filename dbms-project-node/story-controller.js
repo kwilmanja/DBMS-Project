@@ -78,7 +78,6 @@ const StoryController = (app) => {
 
     const getNextPassages = async (req, res) => {
         const previousPassageId = req.body.previousPassageId;
-        console.log(previousPassageId);
         if(previousPassageId || previousPassageId == 0){
             pool.query('select * from passage where previous_passage = ?;', 
                 [previousPassageId], (err, results) => {

@@ -179,17 +179,6 @@ export default function Make() {
 
 
                     </div>
-
-
-
-
-
-
-
-
-
-
-
                 :
                     <div>
 

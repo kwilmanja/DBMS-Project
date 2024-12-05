@@ -72,7 +72,7 @@ const UserController = (app) => {
     const updateUser = async (req, res) => {
         const user = req.body;
         const email = user.email;
-        const phone = user.phone;
+        const phone = user.phone_no;
         const username = user.username;
         const password = user.password;
 
