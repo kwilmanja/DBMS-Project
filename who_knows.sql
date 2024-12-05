@@ -9,43 +9,43 @@ CREATE TABLE account (
     password VARCHAR(100) NOT NULL
 );
 
-
-
 CREATE TABLE prompt (
-	id INT primary key AUTO_INCREMENT,
-    name VARCHAR(128) not null unique,
-    description VARCHAR(512),
-    username VARCHAR(100) NOT NULL,
-    FOREIGN KEY (username) REFERENCES account(username) 
-		ON UPDATE CASCADE ON DELETE CASCADE
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(128) NOT NULL UNIQUE,
+    description VARCHAR(512) NOT NULL,
+    username VARCHAR(100),
+    FOREIGN KEY (username) REFERENCES account(username)
+		ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 
 CREATE TABLE passage (
-	id INT primary key AUTO_INCREMENT,
-	text VARCHAR(512) NOT null,
-    username VARCHAR(100) not null,
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	text VARCHAR(512) NOT NULL,
+    username VARCHAR(100),
     previous_passage INT,
-    prompt int not null,
-    unique(previous_passage, text),
+    prompt INT NOT NULL,
+    UNIQUE(previous_passage, text),
     FOREIGN KEY (username) REFERENCES account(username)
-		ON UPDATE CASCADE ON DELETE CASCADE,
-	FOREIGN KEY (prompt) REFERENCES prompt(id),
+		ON UPDATE CASCADE ON DELETE SET NULL,
+	FOREIGN KEY (prompt) REFERENCES prompt(id)
+		ON UPDATE CASCADE ON DELETE RESTRICT,
 	FOREIGN KEY (previous_passage) REFERENCES passage(id)
-	);
+		ON UPDATE CASCADE ON DELETE RESTRICT
+);
 
 
 CREATE TABLE story (
-	story_id INT primary key AUTO_INCREMENT,
+	story_id INT PRIMARY KEY AUTO_INCREMENT,
 	title VARCHAR(256) NOT NULL,
-    description VARCHAR(512),
+    description VARCHAR(512) NOT NULL,
     username VARCHAR(100),
     published_date DATETIME NOT NULL,
-    end_passage INT not null unique,
-    FOREIGN KEY (end_passage) REFERENCES passage(id) # is about relationship
-		ON UPDATE CASCADE ON DELETE cascade,
-    FOREIGN KEY (username) REFERENCES account(username) # publishes relationship
-		ON UPDATE CASCADE ON DELETE CASCADE
+    end_passage INT NOT NULL UNIQUE,
+    FOREIGN KEY (end_passage) REFERENCES passage(id)
+		ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (username) REFERENCES account(username)
+		ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE likes (
@@ -59,9 +59,9 @@ CREATE TABLE likes (
 );
 
 CREATE TABLE comment (
-	id INT primary key AUTO_INCREMENT,
-	username VARCHAR(100),
-    story_id INT,
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	username VARCHAR(100) NOT NULL,
+    story_id INT NOT NULL,
     text VARCHAR(512) NOT NULL,
     FOREIGN KEY (username) REFERENCES account(username)
 		ON UPDATE CASCADE ON DELETE CASCADE,
@@ -73,7 +73,6 @@ CREATE TABLE theme (
 	name VARCHAR(64) PRIMARY KEY
 );
 
-
 CREATE TABLE describe_story (
 	story_id INT,
     theme VARCHAR(64),
@@ -81,7 +80,7 @@ CREATE TABLE describe_story (
     FOREIGN KEY (story_id) REFERENCES story(story_id)
 		ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (theme) REFERENCES theme(name)
-		ON UPDATE RESTRICT ON DELETE RESTRICT
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE genre (
@@ -95,7 +94,7 @@ CREATE TABLE describe_prompt (
     FOREIGN KEY (prompt_id) REFERENCES prompt(id)
 		ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (genre) REFERENCES genre(name)
-		ON UPDATE RESTRICT ON DELETE RESTRICT
+		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
