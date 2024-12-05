@@ -9,37 +9,37 @@ const UserController = (app) => {
         const email = req.body.email;
         const phone = req.body.phone_no;
 
-        pool.query('insert into account values (?, ?, ?, ?);', 
+        pool.query('insert into account values (?, ?, ?, ?);',
             [username, email, phone, password], (err, results) => {
-            if (err) {
-                console.error('Error creating user:', err);
+                if (err) {
+                    console.error('Error creating user:', err);
 
-                if(err.errno == 1062){
-                    res.status(409).json({ error: 'Failed to create user (duplicate username)' });
-                } else{
-                    res.status(500).json({ error: 'Failed to create user' });
+                    if (err.errno == 1062) {
+                        res.status(409).json({ error: 'Failed to create user (duplicate username)' });
+                    } else {
+                        res.status(500).json({ error: 'Failed to create user' });
+                    }
+                    return;
+                } else {
+                    res.json(results);
                 }
-                return;
-            } else {
-                res.json(results);
-            }
-          });
+            });
     };
 
     const login = async (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
-        pool.query('select * from account where username = ? AND password = ?;', 
+        pool.query('select * from account where username = ? AND password = ?;',
             [username, password], (err, results) => {
-            if (err || !results[0]) {
-                console.error('Error finding user:', err);
-                res.status(500).json({ error: 'Failed to login user' });
-                return;
-            } else {
-                req.session["currentUser"] = results[0];
-                res.json(results[0]);
-            }
-          });
+                if (err || !results[0]) {
+                    console.error('Error finding user:', err);
+                    res.status(500).json({ error: 'Failed to login user' });
+                    return;
+                } else {
+                    req.session["currentUser"] = results[0];
+                    res.json(results[0]);
+                }
+            });
     };
 
     const profile = async (req, res) => {
@@ -50,17 +50,17 @@ const UserController = (app) => {
         }
         const username = currentUser.username;
         const password = currentUser.password;
-        pool.query('select * from account where username = ? AND password = ?;', 
+        pool.query('select * from account where username = ? AND password = ?;',
             [username, password], (err, results) => {
-            if (err) {
-                console.error('Error finding user:', err);
-                res.status(500).json({ error: 'Failed to login user' });
-                return;
-            } else {
-                req.session["currentUser"] = results[0];
-                res.json(results[0]);
-            }
-          });
+                if (err) {
+                    console.error('Error finding user:', err);
+                    res.status(500).json({ error: 'Failed to login user' });
+                    return;
+                } else {
+                    req.session["currentUser"] = results[0];
+                    res.json(results[0]);
+                }
+            });
     };
 
     const logout = async (req, res) => {
@@ -76,44 +76,68 @@ const UserController = (app) => {
         const username = user.username;
         const password = user.password;
 
-        pool.query('update account set email = ?, phone_no = ? where username = ? and password = ?;', 
+        pool.query('update account set email = ?, phone_no = ? where username = ? and password = ?;',
             [email, phone, username, password], (err, results) => {
-            if (err) {
-                console.error('Error updating user:', err);
-                res.status(500).json({ error: 'Failed to update user' });
-                return;
-            } else {
-                res.json(results);
-            }
-        });
+                if (err) {
+                    console.error('Error updating user:', err);
+                    res.status(500).json({ error: 'Failed to update user' });
+                    return;
+                } else {
+                    res.json(results);
+                }
+            });
     };
 
     const findProfileByUsername = async (req, res) => {
 
         const username = req.params.username;
-        pool.query('select username, email, phone_no from account where username = ?;', 
+        pool.query('select username, email, phone_no from account where username = ?;',
             [username], (err, results) => {
-            if (err) {
-                console.error('Error finding user:', err);
-                res.status(500).json({ error: 'Failed to login user' });
-                return;
-            } else {
-                res.json(results[0]);
-            }
-          });
+                if (err) {
+                    console.error('Error finding user:', err);
+                    res.status(500).json({ error: 'Failed to login user' });
+                    return;
+                } else {
+                    res.json(results[0]);
+                }
+            });
     };
 
     const findAllUsers = async (req, res) => {
 
         pool.query('SELECT * FROM account', (err, results) => {
             if (err) {
-              console.error('Error fetching users:', err);
-              res.status(500).json({ error: 'Failed to fetch users' });
+                console.error('Error fetching users:', err);
+                res.status(500).json({ error: 'Failed to fetch users' });
             } else {
-              res.json(results);
+                res.json(results);
             }
-          });
+        });
     };
+
+    const getUserContent = async (req, res) => {
+        const username = req.params.username;
+
+        try {
+            const [stories] = await pool.query(
+                'SELECT * FROM stories WHERE username = ?',
+                [username]
+            );
+            const [passages] = await pool.query(
+                'SELECT * FROM passages WHERE username = ?',
+                [username]
+            );
+            const [prompts] = await pool.query(
+                'SELECT * FROM prompts WHERE username = ?',
+                [username]
+            );
+
+            res.json({ stories, passages, prompts });
+        } catch (err) {
+            console.error("Error fetching user content:", err);
+            res.status(500).json({ error: "Failed to fetch user content" });
+        }
+    }
 
 
     app.post("/api/users/login", login);
@@ -123,6 +147,7 @@ const UserController = (app) => {
 
     app.get("/api/users/profile/:username", findProfileByUsername);
     app.get("/api/users/all", findAllUsers);
+    app.get("/api/users/content/:username", getUserContent);
 
     app.put("/api/users/update", updateUser);
 

@@ -45,3 +45,8 @@ export const findAllUsers = async () => {
     const response = await api.get(`${USERS_URL}/all`);
     return response.data;
 };
+
+export const getUserContent = async (username) => {
+    const response = await api.get(`${USERS_URL}/content/${username}`);
+    return response.data;
+}
