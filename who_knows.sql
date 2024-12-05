@@ -144,6 +144,15 @@ select s.*,
 	join passage p on p.id = s.end_passage
 	join prompt pr on pr.id = p.prompt
 	group by s.story_id;
+    
+CREATE VIEW full_prompt_data AS
+select p.*, 
+	g.genres
+	from prompt p
+	left join (select prompt_id, group_concat(genre separator ', ') as genres
+		from describe_prompt group by prompt_id) as g
+		on g.prompt_id = p.id
+	group by p.id;
 
 drop procedure if exists build_story;
 DELIMITER //

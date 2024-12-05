@@ -53,7 +53,7 @@ const StoryController = (app) => {
     };
 
     const getAllPrompts = async (req, res) => {
-        pool.query('select * from prompt;', (err, results) => {
+        pool.query('select * from full_prompt_data;', (err, results) => {
             if (err) {
                 console.error('Error finding prompts:', err);
                 res.status(500).json({ error: 'Failed to find prompts' });
