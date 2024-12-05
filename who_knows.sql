@@ -222,3 +222,23 @@ begin
 	group by s.story_id;
 end //
 DELIMITER ;
+
+drop procedure if exists publish_story;
+DELIMITER //
+create procedure publish_story
+(text_p varchar(512), username_p varchar(100), 
+previous_passage_p int, prompt_p int,
+description_p varchar(512), title_p varchar(256)
+)
+begin
+	
+	insert into passage (text, username, previous_passage, prompt)
+	values (text_p, username_p, previous_passage_p, prompt_p);
+
+	insert into story (title, description, username, published_date, end_passage)
+	values (title_p, description_p, username_p, now(), LAST_INSERT_ID());
+
+	SELECT LAST_INSERT_ID() as id;
+
+end //
+DELIMITER ;

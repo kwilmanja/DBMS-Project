@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import MakeStoryCard from "./MakeStoryCard";
 import { getPromptByIdThunk, getPassageByIdThunk, 
-    createPassageThunk, getNextPassagesThunk } from "../stories/stories-thunks";
+    createPassageThunk, getNextPassagesThunk, 
+    publishStoryThunk} from "../stories/stories-thunks";
 import { useNavigate, useParams } from "react-router-dom";
 import {Link} from "react-router-dom";
 import { getNextPassages } from "../stories/stories-service";
@@ -17,8 +18,12 @@ export default function Make() {
     const {passageId, promptId} = useParams();
 
     const [passage, setPassage] = useState({});
+    const [newPassage, setNewPassage] = useState({});
     const [content, setContent] = useState('');
     const [failed, setFailed] = useState(false);
+    const [publishing, setPublishing] = useState(false);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -52,35 +57,51 @@ export default function Make() {
             return;
         }
 
-        const newPassage ={
+        const passageToCreate ={
             text: content,
             username: currentUser.username,
             previousPassage: passageId,
             prompt: prompt.id
         }
         try{
-            const createAction = await dispatch(createPassageThunk(newPassage));
+            const createAction = await dispatch(createPassageThunk(passageToCreate));
             navigate('/make/' + createAction.payload.id);
         } catch (error){
             setFailed(true);
         }
     };
 
-
-    const publishStory = async () => {
+    const beginPublishing = async () => {
         if(content.length === 0){
             return;
         }
 
-        const newPassage ={
+        const passageToAdd ={
             text: content,
             username: currentUser.username,
             previousPassage: passageId,
             prompt: prompt.id
+        };
+
+        setPublishing(true);
+        setFailed(false);
+        setNewPassage(passageToAdd);
+    };
+
+    const publishStory = async () => {
+        if(title.length === 0 || description.length === 0){
+            return;
         }
+
         try{
-            const createAction = await dispatch(createPassageThunk(newPassage));
-            navigate('/make/' + createAction.payload.id);
+            const passageStory ={
+                passage: newPassage,
+                title: title,
+                description: description,
+            };
+
+            const publishAction = await dispatch(publishStoryThunk(passageStory));
+            navigate('/details/' + publishAction.payload.id);
         } catch (error){
             setFailed(true);
         }
@@ -104,81 +125,131 @@ export default function Make() {
 
             
             <div className="col-md-1 col-lg-2 col-xl-3">
-
             </div>
+
 
             <div className="col-auto col-md-10 col-lg-8 col-xl-6">
 
                 <h1 className="text-center" style={header}>Make a Story:</h1>
                 <MakeStoryCard passage={prompt}/>
 
-                {passage && 
+                {publishing ? 
+
+
+                    
+
                     <div>
-                        <button style={textboxStyle} className="create-story" 
-                        onClick={() => {
-                            if(passage.previous_passage){
-                                navigate('/make/' + passage.previous_passage);
-                            } else {
-                                navigate('/make/begin/' + prompt.id);
-                            }
-                         }}>
-                            <MakeStoryCard passage={passage}/>
-                        </button>
+                        {failed && (<p>Passage already exists, look below!</p>)}
+
+                        {newPassage &&
+                            (<MakeStoryCard passage={newPassage}/>)}
+
+
+                    <div className="mb-3">
+                    <label htmlFor="title" className="form-label">Title</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Enter the title (required)"
+                        required
+                    />
+                    </div>
+
+                    <div className="mb-3">
+                    <label htmlFor="description" className="form-label">Description</label>
+                    <textarea
+                        className="form-control"
+                        rows="4"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        placeholder="Enter a description (required)"
+                        required
+                    />
+                    </div>
+
+
+
+                        <button type="button" className="btn btn-danger d-inline float-end" onClick={() => {setPublishing(false)}}>
+                            Cancel Publishing</button>
+
+                        <button type="button" className="btn btn-primary d-inline" onClick={publishStory}>
+                            Publish Story</button>
+
+
+                    </div>
+                :
+                    <div>
+
+                        {passage && 
+                            <div>
+                                <button style={textboxStyle} className="create-story" 
+                                onClick={() => {
+                                    if(passage.previous_passage){
+                                        navigate('/make/' + passage.previous_passage);
+                                    } else {
+                                        navigate('/make/begin/' + prompt.id);
+                                    }
+                                }}>
+                                    <MakeStoryCard passage={passage}/>
+                                </button>
+                            </div>
+                        }
+
+                        <div>
+                        
+                        {passage ? 
+                            <h5>Continue the Story: </h5>
+                            :
+                            <h5>Begin the Story: </h5>
+                        }
+
+
+                        {currentUser && (
+
+                            <div>
+                                <textarea
+                                    style={textboxStyle}
+                                    rows="4"
+                                    value={content}
+                                    placeholder="Write your story here!"
+                                    onChange={(event) => {
+                                        setContent(event.target.value);
+                                    }}
+                                />
+
+                                <div style={textboxStyle}>
+                                    <div>
+
+                                        <button type="button" className="btn btn-primary d-inline" onClick={createPassage}>
+                                                Finish Passage</button>
+
+                                        <button type="button" className="btn btn-success float-end d-inline" onClick={beginPublishing}>
+                                        Publish Story</button>
+
+                                        {failed && (<p>Passage already exists, look below!</p>)}
+                                    </div>
+                                </div>  
+                            </div>
+                        )}
+
+
+                        </div>
+
+
+                        {nextPassages && nextPassages.map((p) =>
+                            <button style={textboxStyle} className="create-story" 
+                            onClick={() => {
+                                navigate('/make/' + p.id);
+                            }}>
+                                <MakeStoryCard passage={p}/>
+                            </button>
+                        )}
                     </div>
                 }
 
-                <div>
-                    
-                    {passage ? 
-                        <h5>Continue the Story: </h5>
-                        :
-                        <h5>Begin the Story: </h5>
-                    }
-
-
-                    {currentUser && (
-
-                        <div>
-                            <textarea
-                                style={textboxStyle}
-                                rows="4"
-                                value={content}
-                                onChange={(event) => {
-                                    setContent(event.target.value);
-                                }}
-                            />
-
-                            <div style={textboxStyle}>
-                                <div>
-
-                                    <button type="button" className="btn btn-primary d-inline" onClick={createPassage}>
-                                            Finish Passage</button>
-
-                                    <button type="button" className="btn btn-primary d-inline" onClick={publishStory}>
-                                    Publish Story</button>
-
-                                    {failed && (<p>Passage already exists, look below!</p>)}
-                                </div>
-                            </div>
-                            
-                            
-                        </div>
-
-                    )}
-                </div>
-
-                {nextPassages && nextPassages.map((p) =>
-                    <button style={textboxStyle} className="create-story" 
-                    onClick={() => {
-                        navigate('/make/' + p.id);
-                    }}>
-                        <MakeStoryCard passage={p}/>
-                    </button>
-                )}
-
-                    
-
-
+                
             </div>
 
             <div className="col-md-1 col-lg-2 col-xl-3">

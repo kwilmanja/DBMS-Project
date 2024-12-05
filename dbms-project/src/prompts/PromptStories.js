@@ -51,19 +51,26 @@ export default function PromptStories() {
   }
 
   const handleCreateStoryClick = () => {
-    navigate("/make/0");
+    navigate("/make/begin/" + promptId);
   }
 
   return (stories && prompt &&
     <div className="row" style={background}>
+
+      <div className="col-md-1 col-lg-2 col-xl-3">
+
+      </div>
+
       <div className="col-auto col-md-10 col-lg-8 col-xl-6">
         <h1 className="text-center" style={header}>
           {prompt.name}
         </h1>
 
-        <button className="create-story" onClick={handleCreateStoryClick}>
-          Create new story
-        </button>
+        {currentUser && 
+          <button className="create-story" onClick={handleCreateStoryClick}>
+            Create new story
+          </button>
+        }
 
         <h3 className="text-center" style={header}>Published Stories:</h3>
 
@@ -72,6 +79,10 @@ export default function PromptStories() {
             <HomeStoryCard key={story.id} story={story} />
           )}
         </div>
+
+      </div>
+
+      <div className="col-md-1 col-lg-2 col-xl-3">
 
       </div>
 

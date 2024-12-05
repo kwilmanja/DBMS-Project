@@ -78,7 +78,6 @@ const StoryController = (app) => {
 
     const getNextPassages = async (req, res) => {
         const previousPassageId = req.body.previousPassageId;
-        console.log(previousPassageId);
         if(previousPassageId || previousPassageId == 0){
             pool.query('select * from passage where previous_passage = ?;', 
                 [previousPassageId], (err, results) => {
@@ -92,7 +91,7 @@ const StoryController = (app) => {
             });
         } else {
             const promptId = req.body.promptId;
-            pool.query('select * from passage where prompt = ?;', 
+            pool.query('select * from passage where prompt = ? and previous_passage is NULL;', 
                 [promptId], (err, results) => {
                 if (err) {
                     console.error('Error finding passage:', err);
@@ -109,18 +108,27 @@ const StoryController = (app) => {
 
 
     const publishStory = async (req, res) => {
+        let currentUser = req.session["currentUser"];
+        if (!currentUser) {
+            res.sendStatus(404);
+            return;
+        }
+        const username = currentUser.username;
+
+        const text = req.body.passage.text;
+        const previousPassage = req.body.passage.previousPassage;
+        const prompt = req.body.passage.prompt;
+
         const title = req.body.title;
-        const username = req.body.username;
         const description = req.body.description;
-        const endPassage = req.body.endPassage;
-        pool.query('insert into story (title, description, username, published_date, end_passage) values (?, ?, ?, now(), ?);', 
-            [title, description, username, endPassage], (err, results) => {
+        pool.query('call publish_story(?, ?, ?, ?, ?, ?);', 
+            [text, username, previousPassage, prompt, description, title], (err, results) => {
             if (err) {
                 console.error('Error creating story:', err);
                 res.status(500).json({ error: 'Failed to create story' });
                 return;
             } else {
-                res.json(results[0]);
+                res.json(results[0][0]);
             }
           });
     };

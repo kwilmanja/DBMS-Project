@@ -31,12 +31,6 @@ function Nav() {
                                 <span className="visually-hidden">(current)</span>
                             </li>
 
-                            {currentUser &&
-                             <li className="nav-item">
-                                 <Link className="nav-link" to="/make">Make a Story</Link>
-                             </li>
-                            }
-
                             {!currentUser &&
                              <li className="nav-item">
                                  <Link className="nav-link" to="/login">Login</Link>
