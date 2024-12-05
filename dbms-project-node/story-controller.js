@@ -50,14 +50,14 @@ const StoryController = (app) => {
         const text = req.body.text;
         const previousPassage = req.body.previousPassage;
         const prompt = req.body.prompt;
-        pool.query('insert into passage (text, username, previous_passage, prompt) values (?, ?, ?, ?);', 
+        pool.query('call insert_passage(?, ?, ?, ?);', 
             [text, username, previousPassage, prompt], (err, results) => {
             if (err) {
                 console.error('Error creating prompt:', err);
                 res.status(500).json({ error: 'Failed to create prompt' });
                 return;
             } else {
-                res.json(results[0]);
+                res.json(results[0][0]);
             }
           });
     };
@@ -74,6 +74,36 @@ const StoryController = (app) => {
                 res.json(results[0]);
             }
           });
+    };
+
+    const getNextPassages = async (req, res) => {
+        const previousPassageId = req.body.previousPassageId;
+        console.log(previousPassageId);
+        if(previousPassageId || previousPassageId == 0){
+            pool.query('select * from passage where previous_passage = ?;', 
+                [previousPassageId], (err, results) => {
+                if (err) {
+                    console.error('Error finding passage:', err);
+                    res.status(500).json({ error: 'Failed to find passage' });
+                    return;
+                } else {
+                    res.json(results);
+                }
+            });
+        } else {
+            const promptId = req.body.promptId;
+            pool.query('select * from passage where prompt = ?;', 
+                [promptId], (err, results) => {
+                if (err) {
+                    console.error('Error finding passage:', err);
+                    res.status(500).json({ error: 'Failed to find passage' });
+                    return;
+                } else {
+                    res.json(results);
+                }
+            });
+        }
+       
     };
 
 
@@ -169,6 +199,7 @@ const StoryController = (app) => {
 
     app.post("/api/passage/create", createPassage);
     app.get("/api/passage/info/:id", getPassageById);
+    app.post("/api/passage/next", getNextPassages)
 
     app.post("/api/story/publish", publishStory);
     app.delete("/api/story/delete/:id", deleteStory);
@@ -178,6 +209,7 @@ const StoryController = (app) => {
 
 
     app.get("/api/story/all/prompt/:id", getAllStoriesByPromptId)
+
 
 };
 export default StoryController;

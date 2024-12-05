@@ -9,19 +9,25 @@ import {
     deleteStoryThunk,
     getAllStoriesThunk,
     getStoryMetadataThunk,
-    getStoryPassagesThunk
+    getStoryPassagesThunk,
+    getNextPassagesThunk
 } from "./stories-thunks.js";
 
 
 const storiesSlice = createSlice({
     name: "stories",
-    initialState: { },
+    initialState: {prompt: {}, nextPassages: []},
     reducers: {},
     extraReducers: (builder) => {
-    //   builder
-    //     .addCase(loginThunk.fulfilled, (state, { payload }) => {
-    //       state.currentUser = payload
-    //     });
+      builder
+        .addCase(getPromptByIdThunk.fulfilled, (state, { payload }) => {
+          state.prompt = payload;
+          state.prompt.text = state.prompt.description;
+        })
+        .addCase(getNextPassagesThunk.fulfilled, (state, { payload }) => {
+          state.nextPassages = payload;
+        })
+        ;
     }
 });
 export default storiesSlice.reducer;

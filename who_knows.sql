@@ -23,10 +23,11 @@ CREATE TABLE prompt (
 
 CREATE TABLE passage (
 	id INT primary key AUTO_INCREMENT,
-	text VARCHAR(512) NOT NULL,
+	text VARCHAR(512) NOT null,
     username VARCHAR(100) not null,
     previous_passage INT,
     prompt int not null,
+    unique(previous_passage, text),
     FOREIGN KEY (username) REFERENCES account(username)
 		ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (prompt) REFERENCES prompt(id),
@@ -188,5 +189,21 @@ begin
 	join prompt pr on pr.id = p.prompt
 	where pr.id = prompt_id_p
 	group by s.story_id;
+end //
+DELIMITER ;
+
+
+drop procedure if exists insert_passage;
+DELIMITER //
+create procedure insert_passage
+(text_p varchar(512), username_p varchar(100), 
+previous_passage_p int, prompt_p int)
+begin
+	
+	insert into passage (text, username, previous_passage, prompt)
+	values (text_p, username_p, previous_passage_p, prompt_p);
+	
+	SELECT LAST_INSERT_ID() as id;
+	
 end //
 DELIMITER ;

@@ -31,6 +31,11 @@ export const getPassageById = async (passageId) => {
     return response.data;
 }
 
+export const getNextPassages = async (body) => {
+    const response = await api.post(`${PASSAGE_API}/next`, body);
+    return response.data;
+}
+
 export const publishStory = async (story) => {
     const response = await api.post(`${STORY_API}/publish`, story);
     return response.data;

@@ -51,7 +51,7 @@ export default function PromptStories() {
   }
 
   const handleCreateStoryClick = () => {
-    navigate("/make");
+    navigate("/make/0");
   }
 
   return (stories && prompt &&

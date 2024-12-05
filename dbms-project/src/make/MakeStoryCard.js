@@ -41,11 +41,18 @@ const MakeStoryCard = ({ passage }) => {
         {passage &&
             <div className="col">
                 <div className="card mb-3" style={card}>
-                    <div className="card-header align-items-center" style={inline}>
-                        <Link to={'/profile/' + passage.username} style={link}>
-                            <h5 style={inline}>{passage.username} -</h5>
-                        </Link>
-                    </div>
+
+                    {passage.name ? 
+                <div className="card-header align-items-center" style={inline}>
+                    <h5 style={inline}>Prompt: {passage.name}</h5>
+                </div>
+                :
+                <div className="card-header align-items-center" style={inline}>
+                    <h5 style={inline}>Passage: {passage.username}</h5>
+                </div>
+                }
+
+                
 
                     <div className="card-body">
                         
