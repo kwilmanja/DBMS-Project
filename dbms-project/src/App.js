@@ -12,7 +12,9 @@ import Admin from "./login/Admin";
 import ProfileEdit from "./profile/ProfileEdit";
 import Make from "./make/Make.js";
 import Prompts from "./prompts/Prompts.js";
-import PromptStories from "./prompts/PromptStories.js"
+import PromptStories from "./prompts/PromptStories.js";
+import PromptCreate from "./prompts/PromptCreate.js";
+import PromptEditor from "./prompts/PromptEditor.js";
 import Details from "./details/Details.js";
 
 
@@ -29,6 +31,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/prompts" element={<Prompts />} />
               <Route path="/prompts/:promptId" element={<PromptStories />} />
+              <Route path="/prompts/create" element={<PromptCreate />} />
+              {/* <Route path="/prompts/editor/:promptId" element={<PromptEditor />} /> */}
               <Route path="/details/:storyId" element={<Details />} />
               <Route path="/make/:passageId" element={<Make />} />
               <Route path="/login" element={<Login />} />
