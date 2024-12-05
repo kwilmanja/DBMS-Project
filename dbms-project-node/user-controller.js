@@ -119,23 +119,33 @@ const UserController = (app) => {
         const username = req.params.username;
 
         try {
-            const [stories] = await pool.query(
-                'SELECT * FROM stories WHERE username = ?',
-                [username]
-            );
-            const [passages] = await pool.query(
-                'SELECT * FROM passages WHERE username = ?',
-                [username]
-            );
-            const [prompts] = await pool.query(
-                'SELECT * FROM prompts WHERE username = ?',
-                [username]
-            );
+            const storiesPromise = new Promise((resolve, reject) => {
+                pool.query('call get_stories_by_username(?);', [username], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+
+            const passagesPromise = new Promise((resolve, reject) => {
+                pool.query('select * from passage where username = ?', [username], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+
+            const promptsPromise = new Promise((resolve, reject) => {
+                pool.query('select * from prompt where username = ?', [username], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+
+            const [stories, passages, prompts] = await Promise.all([storiesPromise, passagesPromise, promptsPromise]);
 
             res.json({ stories, passages, prompts });
         } catch (err) {
-            console.error("Error fetching user content:", err);
-            res.status(500).json({ error: "Failed to fetch user content" });
+            console.error('Error retrieving user content:', err);
+            res.status(500).json({ error: 'Failed to retrieve user content.' });
         }
     }
 
