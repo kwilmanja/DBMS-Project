@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { createPromptThunk, getAllStoriesByPromptIdThunk, getPromptByIdThunk } from "../stories/stories-thunks.js";
+import { createPromptThunk, getAllGenresThunk, getAllStoriesByPromptIdThunk, getPromptByIdThunk } from "../stories/stories-thunks.js";
 import HomeStoryCard from "../home/HomeStoryCard.js";
 import { current } from "@reduxjs/toolkit";
 
@@ -15,6 +15,19 @@ export default function PromptCreate() {
 
   const [promptName, setPromptName] = useState("");
   const [promptDescription, setPromptDescription] = useState("");
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+
+      const genresAction = await dispatch(getAllGenresThunk())
+      setGenres(genresAction.payload.map((genreObject) => (genreObject.name)));
+
+    }
+
+    fetchData();
+  }, []);
 
   const handleCreatePromptClick = async () => {
     if (!promptName.trim || !promptDescription.trim()) {
@@ -31,7 +44,7 @@ export default function PromptCreate() {
     }
 
     try {
-      await dispatch(createPromptThunk({ name: promptName, description: promptDescription, username: currentUser.username }));
+      await dispatch(createPromptThunk({ name: promptName, description: promptDescription, genres: selectedGenres }));
       alert("Prompt created successfully!")
       navigate("/prompts")
     } catch (error) {
@@ -39,6 +52,15 @@ export default function PromptCreate() {
       alert("Failed to create prompt. Please try again.")
     }
   }
+
+  const handleCheckbox = (e) => {
+    const { value, checked } = e.target;
+    setSelectedGenres((prev) =>
+      checked ? [...prev, value]
+        :
+        prev.filter((option) => option !== value)
+    );
+  };
 
   const header = {
     "color": "white",
@@ -75,6 +97,26 @@ export default function PromptCreate() {
             maxLength="512"
             rows="4"
           />
+        </div>
+
+        <div>
+          <h3>Select Genres:</h3>
+          <form>
+            {genres.map((genre) => (
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  value={genre}
+                  checked={selectedGenres.includes(genre)}
+                  onChange={handleCheckbox}
+                  className="form-check-input" />
+
+                <label className="form-check-label">
+                  {genre}
+                </label>
+              </div>
+            ))}
+          </form>
         </div>
 
         <button

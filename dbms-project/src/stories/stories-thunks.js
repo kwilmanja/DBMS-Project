@@ -1,8 +1,9 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
     createPrompt,
     getPromptById,
     getAllPrompts,
+    getAllGenres,
     createPassage,
     getPassageById,
     publishStory,
@@ -29,6 +30,11 @@ export const getPromptByIdThunk = createAsyncThunk(
 export const getAllPromptsThunk = createAsyncThunk(
     'getAllPrompts',
     async () => await getAllPrompts()
+)
+
+export const getAllGenresThunk = createAsyncThunk(
+    'getAllGenres',
+    async () => await getAllGenres()
 )
 
 export const createPassageThunk = createAsyncThunk(
