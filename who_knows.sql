@@ -129,6 +129,19 @@ insert into theme values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure');
 -- );
 
 
+CREATE VIEW full_story_data AS
+select s.*, 
+	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes,
+	t.themes,
+	pr.name as prompt
+	from story s
+	left join likes l on l.story_id = s.story_id
+	left join (select story_id, group_concat(theme separator '-') as themes
+		from describe_story group by story_id) as t
+		on t.story_id = s.story_id
+	join passage p on p.id = s.end_passage
+	join prompt pr on pr.id = p.prompt
+	group by s.story_id;
 
 drop procedure if exists build_story;
 DELIMITER //
@@ -149,50 +162,6 @@ begin
 end //
 DELIMITER ;
 
-
-drop procedure if exists get_story_metadata;
-DELIMITER //
-create procedure get_story_metadata
-(story_id_p int)
-begin
-	select s.*, count(*) as num_likes from story s
-	left join likes l on l.story_id = s.story_id
-	where s.story_id = story_id_p
-	group by s.story_id;
-end //
-DELIMITER ;
-
-
-drop procedure if exists get_all_stories;
-DELIMITER //
-create procedure get_all_stories
-()
-begin
-	select s.*, 
-	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes 
-	from story s
-	left join likes l on l.story_id = s.story_id
-	group by s.story_id;
-end //
-DELIMITER ;
-
-drop procedure if exists get_stories_by_prompt_id;
-DELIMITER //
-create procedure get_stories_by_prompt_id
-(prompt_id_p int)
-begin
-	select s.*, 
-	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes
-	from story s
-	left join likes l on l.story_id = s.story_id
-	join passage p on p.id = s.end_passage
-	join prompt pr on pr.id = p.prompt
-	where pr.id = prompt_id_p
-	group by s.story_id;
-end //
-DELIMITER ;
-
-
 drop procedure if exists insert_passage;
 DELIMITER //
 create procedure insert_passage
@@ -208,7 +177,15 @@ begin
 end //
 DELIMITER ;
 
-
+drop procedure if exists get_stories_by_username;
+DELIMITER //
+create procedure get_stories_by_username
+(username_p varchar(100))
+begin
+	select * from full_story_data
+	where username = username_p;
+end //
+DELIMITER ;
 
 drop procedure if exists publish_story;
 DELIMITER //
@@ -227,5 +204,45 @@ begin
 
 	SELECT LAST_INSERT_ID() as id;
 
+end //
+DELIMITER ;
+
+drop procedure if exists get_story_metadata;
+DELIMITER //
+create procedure get_story_metadata
+(story_id_p int)
+begin
+	select * from full_story_data
+	where story_id = story_id_p;
+end //
+DELIMITER ;
+
+
+drop procedure if exists get_all_stories;
+DELIMITER //
+create procedure get_all_stories
+()
+begin
+	select * from full_story_data;
+end //
+DELIMITER ;
+
+drop procedure if exists get_stories_by_prompt_id;
+DELIMITER //
+create procedure get_stories_by_prompt_id
+(prompt_id_p int)
+begin
+	select * from full_story_data
+	where prompt = prompt_id_p;
+end //
+DELIMITER ;
+
+drop procedure if exists get_stories_by_username;
+DELIMITER //
+create procedure get_stories_by_username
+(username_p varchar(100))
+begin
+	select * from full_story_data
+	where username = username_p;
 end //
 DELIMITER ;
