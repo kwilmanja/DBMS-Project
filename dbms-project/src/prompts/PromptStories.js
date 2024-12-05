@@ -51,7 +51,7 @@ export default function PromptStories() {
   }
 
   const handleCreateStoryClick = () => {
-    navigate("/make/0");
+    navigate("/make/begin/" + promptId);
   }
 
   return (stories && prompt &&
@@ -61,9 +61,11 @@ export default function PromptStories() {
           {prompt.name}
         </h1>
 
-        <button className="create-story" onClick={handleCreateStoryClick}>
-          Create new story
-        </button>
+        {currentUser && 
+          <button className="create-story" onClick={handleCreateStoryClick}>
+            Create new story
+          </button>
+        }
 
         <h3 className="text-center" style={header}>Published Stories:</h3>
 
