@@ -49,7 +49,7 @@ export default function Prompts() {
     }
 
     return (
-        <div className="row">
+        <div className="row" style={{ marginBottom: '50px' }}>
 
             <div className="col-md-1 col-lg-2 col-xl-3">
 
@@ -66,6 +66,8 @@ export default function Prompts() {
                         </button>
                     }
                 </div>
+
+                <hr/>
 
                 <div style={adjustment}>
                     {prompts && prompts.map((prompt) =>

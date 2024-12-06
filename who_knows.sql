@@ -98,6 +98,7 @@ CREATE TABLE describe_prompt (
 );
 
 
+
 insert into account values 
 	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
 	('joe', 'joe@gmail.com', '7203218756', 'world'),
@@ -186,6 +187,7 @@ insert into comment (username, story_id, text) values
 insert into likes values 
 	('joe', 1), ('pozboi', 1), ('Pitbull', 1), ('Jay-Z', 1), ('DJ Khaled', 1), ('Bob', 1),
     ('joe', 2), ('pozboi', 2), ('Pitbull', 2), ('Bob', 3);
+
 
 
 CREATE VIEW full_story_data AS

@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {formatDate} from "../utility";
 import { updateCommentThunk, getStoryCommentsThunk, deleteCommentThunk} from "../comments/comment-thunks";
 
 function DetailsReview({comment}) {
@@ -21,7 +20,7 @@ function DetailsReview({comment}) {
 
 
     return(
-        <div>
+        <div className="mb-5">
 
             {comment &&
                 <div>

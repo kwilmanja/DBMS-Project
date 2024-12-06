@@ -140,7 +140,7 @@ export default function Make() {
 
     return (
         
-        <div className="row">
+        <div className="row" style={{ marginBottom: '50px' }}>
 
             
             <div className="col-md-1 col-lg-2 col-xl-3">
@@ -238,6 +238,8 @@ export default function Make() {
 
                         <div>
                         
+                        <hr/>
+
                         {passage ? 
                             <h5>Continue the Story: </h5>
                             :
@@ -275,6 +277,11 @@ export default function Make() {
 
 
                         </div>
+
+
+                        <hr/>
+
+                        <h5>Or Choose Another's to Continue: </h5>
 
 
                         {nextPassages && nextPassages.map((p) =>

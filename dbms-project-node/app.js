@@ -4,8 +4,9 @@ import session from "express-session";
 import UserController from "./user-controller.js";
 import StoryController from './story-controller.js';
 import CommentController from './comment-controller.js';
+import dotenv from 'dotenv';
 
-
+dotenv.config();
 
 const app = express();
 
@@ -20,4 +21,4 @@ UserController(app);
 StoryController(app);
 CommentController(app);
 
-app.listen(4000);
+app.listen(process.env.PORT || 4000);

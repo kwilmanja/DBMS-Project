@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const PROMPT_API = 'http://localhost:4000/api/prompt';
-const PASSAGE_API = 'http://localhost:4000/api/passage';
-const STORY_API = 'http://localhost:4000/api/story';
-
+const PROMPT_API = process.env.REACT_APP_API_URL + `/prompt`;
+const PASSAGE_API = process.env.REACT_APP_API_URL + `/passage`;
+const STORY_API = process.env.REACT_APP_API_URL + `/story`;
+ 
 const api = axios.create({ withCredentials: true });
 
 export const createPrompt = async (prompt) => {

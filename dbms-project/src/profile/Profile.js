@@ -53,7 +53,7 @@ function Profile() {
 
     return (
 
-        <div>
+        <div className="mb-5">
             {profile && (
                 <div className="row mt-3 mb-3" >
                     <div className="col-8">

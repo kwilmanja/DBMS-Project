@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const COMMENTS_URL = `http://localhost:4000/api/comments`;
-const LIKES_URL = `http://localhost:4000/api/likes`
+const COMMENTS_URL = process.env.REACT_APP_API_URL + `/comments`;
+const LIKES_URL = process.env.REACT_APP_API_URL + `/likes`
 
 const api = axios.create({ withCredentials: true });
 
