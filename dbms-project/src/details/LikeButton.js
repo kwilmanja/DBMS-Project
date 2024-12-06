@@ -8,12 +8,12 @@ const LikeButton = ({ storyId }) => {
   const { currentUser } = useSelector((state) => state.auth);
   const { likes } = useSelector((state) => state.likes);
 
-  const [isLiked, setIsLiked] = useState();
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const userLiked = likes.filter(like => like.username === currentUser.username).length > 0;
     setIsLiked(userLiked);
-  }, []);
+  }, [likes]);
 
   const handleLikeToggle = async () => {
     if (isLiked) {
