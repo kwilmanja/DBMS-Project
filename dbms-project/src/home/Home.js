@@ -15,8 +15,11 @@ export default function Home() {
     useEffect(() => {
         async function fetchData() {
             const storiesAction = await dispatch(getAllStoriesThunk());
-            const stories = storiesAction.payload.slice();            
-            setStories(stories);
+            if(storiesAction.payload){
+                const stories = storiesAction.payload.slice();            
+                setStories(stories);
+            }
+           
         }
         fetchData();
     }, []);
