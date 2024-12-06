@@ -97,6 +97,99 @@ CREATE TABLE describe_prompt (
 		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+
+
+insert into account values 
+	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
+	('joe', 'joe@gmail.com', '7203218756', 'world'),
+    ('Jay-Z', 'jay_zee@outlook.com', null, 'queenbee'),
+    ('Pitbull', 'mrworldwide@gmail.com', null, 'notadog'),
+    ('DJ Khaled', 'khaled@msn.com', '8189765252', 'wethebestmusic'),
+    ('Bob', 'bob@thebuilder.org', '5557778888', 'yeswecan');	
+
+insert into prompt (name, description, username) values 
+	('Lost in the Blue Abyss', 'A curious young explorer is swept away into the vast, 
+    colorful depths of the ocean, where unlikely friends help navigate dangers and reunite 
+    with family.', 'pozboi'),
+    ('Echoes in the Empty Hotel', 'A winter caretaker and his family find themselves trapped 
+    in a sprawling, isolated lodge where eerie forces and personal demons blur the line between 
+    reality and madness.', 'pozboi'),
+	('Isle of Dinosaurs', 'A revolutionary wildlife sanctuary brings ancient creatures back 
+    to life, but nature\'s unpredictability turns a dream into a thrilling fight for survival.', 
+    'joe'),
+    ('The Cosmic Traveler\'s Handbook', 'An ordinary human is swept into an absurd intergalactic 
+    adventure, armed with a peculiar guidebook and a knack for stumbling into cosmic chaos.', 
+    'joe'),
+    ('The Tale of True Hearts and Peril', 'A daring hero, a spirited princess, and a cast of 
+    quirky companions embark on a whimsical journey through danger, love, and legendary feats.', 
+    'joe'),
+    ('Life in the Family', 'A young hustler rises through the ranks of a powerful crime syndicate, 
+    navigating loyalty, betrayal, and the high cost of living the good life.', 'joe'),
+    ('The Path to Memory Creek', 'Four childhood friends embark on a life-changing journey to 
+    uncover a secret, discovering the bonds of friendship and the weight of growing up along 
+    the way.', 'Jay-Z'),
+    ('Epic Night: The Final Countdown', 'Two lifelong friends set out on a chaotic quest to 
+    make their last high school party unforgettable, facing hilarious mishaps and heartfelt 
+    revelations along the way.', 'Pitbull'),
+    ('Christmas Gone Haywire', 'A well-meaning family\'s quest for the perfect Christmas 
+    spirals into chaos as unexpected guests, wild antics, and festive disasters pile up.', 
+    'DJ Khaled'),
+    ('Builder Bob and the Big Fix-Up', 'A cheerful builder and his team of talking tools tackle 
+    their biggest challenge yet, proving that teamwork and determination can solve any problem.', 
+    'Bob'),
+    ('Critter Crew to the Rescue', 'A trio of pint-sized heroes springs into action, using smarts, 
+    teamwork, and catchy tunes to help animals in need around the world.', 'Bob');
+    
+insert into genre values 
+	('Thriller'), ('Mystery'), ('Romance'), ('Adventure'), ('Sci-fi'), ('Non-Fiction'), ('Horror'),
+	('Comedy');
+
+insert into describe_prompt values
+	(1, 'Adventure'), (2, 'Horror'), (2, 'Thriller'), (2, 'Mystery'), (3, 'Thriller'), (3, 'Sci-fi'), (3, 'Adventure'),
+    (4, 'Sci-fi'), (4, 'Adventure'), (5, 'Romance'), (5, 'Adventure'), (6, 'Adventure'), (6, 'Non-Fiction'),
+    (7, 'Adventure'), (8, 'Comedy'), (8, 'Adventure'), (9, 'Non-fiction'), (9, 'Comedy'), (10, 'Thriller'), 
+    (10, 'Comedy'), (11, 'Adventure');
+
+insert into passage (text, username, previous_passage, prompt) values 
+	('A young fish named Bemo is eager to explore the vast ocean, so he swims beyond the safety of his coral home.', 
+    'joe', NULL, 1);
+
+insert into passage (text, username, previous_passage, prompt) values 
+	('He meets a wise old sea turtle who offers to guide him through the currents.', 'pozboi', 1, 1),
+	('Caught by a sudden movement, the young fish is trapped in a net, struggling to escape.', 'joe', 1, 1),
+	('Drawn by shimmering light, the young fish discovers a glowing cave filled with hidden treasures.', 'Jay-Z', 1, 1);
+    
+insert into passage (text, username, previous_passage, prompt) values 
+	('The turtle shares secrets of the ocean, showing how to ride currents to travel great distances.', 'pozboi', 2, 1),
+    ('Using quick thinking, the young fish wiggles free and promises his dad to stay cautious in the future.', 'joe', 3, 1),
+    ('A giant octopus emerges from the shadows, offering a challenge in exchange for safe passage.', 'Jay-Z', 4, 1);
+
+insert into story (title, description, username, published_date, end_passage) values 
+	('Bemo meets a cool sea turtle', 'A young fish named Bemo makes an unlikely friend with a 100 year old sea turtle', 
+    'pozboi', now(), 5),
+	('Bemo escapes disaster!', 'Bemo is almost taken by a net, but he uses his brilliance to escape in time.', 
+    'joe', now(), 6),
+    ('Octopus lol', 'Bemo meets an octopus. The octopus has a challenge for him (unfinished: I got writer\'s block).', 
+    'Jay-Z', now(), 7);
+
+insert into theme values ('Survival'), ('Family'), ('Love'), ('Coming-of-Age'), ('Friendship'), ('Good and Evil');
+
+insert into describe_story values
+	(1, 'Friendship'), (2, 'Survival'), (2, 'Family'), (2, 'Coming-of-Age'), (3, 'Good and Evil');
+
+insert into comment (username, story_id, text) values 
+	('joe', 1, 'good story'), ('pozboi', 1, 'mid story'), ('Jay-Z', 1, 'made me laugh!'), 
+    ('Pitbull', 1, 'Mr. Worldwide approves'), ('DJ Khaled', 1, 'my password is wethebestmusic'),
+    ('Bob', 2, 'That was a close one!'), ('pozboi', 2, 'Bemo seems like a chill guy'), ('Jay-Z', 2, 'This one made me laugh too!'),
+    ('Pitbull', 3, 'I had an octopus once...'), ('Jay-Z', 3, 'Hey guys, please help me finish this story. Much appreciated!'),
+    ('DJ Khaled', 3, 'This story is the worst!');
+
+insert into likes values 
+	('joe', 1), ('pozboi', 1), ('Pitbull', 1), ('Jay-Z', 1), ('DJ Khaled', 1), ('Bob', 1),
+    ('joe', 2), ('pozboi', 2), ('Pitbull', 2), ('Bob', 3);
+
+
+
 CREATE VIEW full_story_data AS
 select s.*, 
 	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes,
