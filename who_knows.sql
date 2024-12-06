@@ -97,38 +97,6 @@ CREATE TABLE describe_prompt (
 		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-insert into account values 
-	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
-	('joe', 'joe@gmail.com', '7202444008', 'world'),
-	('a', 'a', 'a', 'a');	
-
-insert into prompt (name, description, username)
-	values ('Prompt1', 'a prompt about something', 'joe'),
-	('Prompt2', 'another prompt about something', 'joe');
-
-insert into passage (text, username, previous_passage, prompt)
-	values ('hhhhhhhhhhhhh', 'joe', null, 1),
-	('gggggggggggggg', 'joe', null, 1);
-
-insert into passage (text, username, previous_passage, prompt)
-	values ('jjjjjjjjjjj', 'pozboi', 1, 1),
-	('kkkkkkkkkkkk', 'pozboi', 1, 1),
-	('llllllllllll', 'joe', 4, 1);
-
-insert into story (title, description, username, published_date, end_passage)
-	values ('story title', 'story description', 'joe', now(), 5),
-	('another story', 'story description', 'joe', now(), 4);
-
-insert into comment (username, story_id, text) values ('joe', 1, 'good story'), ('pozboi', 1, 'mid story');
-
-insert into likes values ('joe', 1), ('pozboi', 1);
-
-insert into theme values ('Survival'), ('Family'), ('Love'), ('Coming-of-Age'), ('Friendship'), ('Good and Evil');
-
-insert into genre values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure'), ('Sci-fi'), ('Non-Fiction');
-
-
 CREATE VIEW full_story_data AS
 select s.*, 
 	sum(CASE WHEN l.username IS NOT NULL THEN 1 ELSE 0 END) as num_likes,

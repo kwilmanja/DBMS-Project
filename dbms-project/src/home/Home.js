@@ -21,19 +21,6 @@ export default function Home() {
         fetchData();
     }, []);
 
-
-
-    const background = {
-        "background-image": "url('images/bike2.jpg')",
-        "background-size": "cover",
-        "background-repeat": "no-repeat",
-        "background-position": "center center"
-    }
-
-    const image2Style = {
-        "width": "100%"
-    }
-
     const header = {
         "color": "white",
         "text-shadow":
@@ -41,7 +28,7 @@ export default function Home() {
     }
 
     return (
-        <div className="row" style={background}>
+        <div className="row" style={{ marginBottom: '50px' }}>
 
             <div className="col-md-1 col-lg-2 col-xl-3">
 

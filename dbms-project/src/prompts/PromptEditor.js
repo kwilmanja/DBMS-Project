@@ -46,7 +46,7 @@ export default function PromptEditor() {
   }
 
   return (
-    <div className="row">
+    <div className="row" style={{ marginBottom: '50px' }}>
 
       <div className="col-md-1 col-lg-2 col-xl-3"></div>
 

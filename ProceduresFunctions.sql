@@ -52,24 +52,16 @@ use stories;
 -- SELECT LAST_INSERT_ID();
 -- select * from account;
 
-
 drop procedure if exists get_story_metadata;
 DELIMITER //
 create procedure get_story_metadata
 (story_id_p int)
 begin
-	select s.*, count(*) as num_likes from story s
-	left join likes l on l.story_id = s.story_id
-	where s.story_id = story_id_p
-	group by s.story_id;
+	select * from full_story_data
+	where story_id = story_id_p;
 end //
 DELIMITER ;
-
-call get_story_metadata(10);
-
-
-select story_id, group_concat(theme separator '-') from describe_story where story_id = 10
-group by story_id;
+call get_story_metadata(1);
 
 
 

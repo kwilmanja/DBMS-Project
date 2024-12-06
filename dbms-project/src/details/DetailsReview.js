@@ -21,7 +21,7 @@ function DetailsReview({comment}) {
 
 
     return(
-        <div>
+        <div className="mb-5">
 
             {comment &&
                 <div>
