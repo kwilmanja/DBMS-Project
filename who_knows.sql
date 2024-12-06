@@ -150,34 +150,42 @@ insert into describe_prompt values
     (10, 'Comedy'), (11, 'Adventure');
 
 insert into passage (text, username, previous_passage, prompt) values 
-	('A young fish, eager to explore the vast ocean, swims beyond the safety of his coral home.', 'user1', NULL, 1);
+	('A young fish named Bemo is eager to explore the vast ocean, so he swims beyond the safety of his coral home.', 
+    'joe', NULL, 1);
 
 insert into passage (text, username, previous_passage, prompt) values 
-	('He meets a wise old sea turtle who offers to guide him through the currents.', 'user1', 1, 2);
+	('He meets a wise old sea turtle who offers to guide him through the currents.', 'pozboi', 1, 1),
+	('Caught by a sudden movement, the young fish is trapped in a net, struggling to escape.', 'joe', 1, 1),
+	('Drawn by shimmering light, the young fish discovers a glowing cave filled with hidden treasures.', 'Jay-Z', 1, 1);
+    
+insert into passage (text, username, previous_passage, prompt) values 
+	('The turtle shares secrets of the ocean, showing how to ride currents to travel great distances.', 'pozboi', 2, 1),
+    ('Using quick thinking, the young fish wiggles free and promises his dad to stay cautious in the future.', 'joe', 3, 1),
+    ('A giant octopus emerges from the shadows, offering a challenge in exchange for safe passage.', 'Jay-Z', 4, 1);
 
--- Branch 2: The young fish gets caught in a fishing net
-insert into passage (text, username, previous_passage, prompt) 
-values ('Caught by a sudden movement, the young fish is trapped in a net, struggling to escape.', 'user1', 1, 3);
-
--- Branch 3: The young fish discovers a glowing cave
-insert into passage (text, username, previous_passage, prompt) 
-values ('Drawn by shimmering light, the young fish discovers a glowing cave filled with hidden treasures.', 'user1', 1, 4);
-
-
-insert into passage (text, username, previous_passage, prompt)
-	values ('jjjjjjjjjjj', 'pozboi', 1, 1),
-	('kkkkkkkkkkkk', 'pozboi', 1, 1),
-	('llllllllllll', 'joe', 4, 1);
-
-insert into story (title, description, username, published_date, end_passage)
-	values ('story title', 'story description', 'joe', now(), 5),
-	('another story', 'story description', 'joe', now(), 4);
-
-insert into comment (username, story_id, text) values ('joe', 1, 'good story'), ('pozboi', 1, 'mid story');
-
-insert into likes values ('joe', 1), ('pozboi', 1);
+insert into story (title, description, username, published_date, end_passage) values 
+	('Bemo meets a cool sea turtle', 'A young fish named Bemo makes an unlikely friend with a 100 year old sea turtle', 
+    'pozboi', now(), 5),
+	('Bemo escapes disaster!', 'Bemo is almost taken by a net, but he uses his brilliance to escape in time.', 
+    'joe', now(), 6),
+    ('Octopus lol', 'Bemo meets an octopus. The octopus has a challenge for him (unfinished: I got writer\'s block).', 
+    'Jay-Z', now(), 7);
 
 insert into theme values ('Survival'), ('Family'), ('Love'), ('Coming-of-Age'), ('Friendship'), ('Good and Evil');
+
+insert into describe_story values
+	(1, 'Friendship'), (2, 'Survival'), (2, 'Family'), (2, 'Coming-of-Age'), (3, 'Good and Evil');
+
+insert into comment (username, story_id, text) values 
+	('joe', 1, 'good story'), ('pozboi', 1, 'mid story'), ('Jay-Z', 1, 'made me laugh!'), 
+    ('Pitbull', 1, 'Mr. Worldwide approves'), ('DJ Khaled', 1, 'my password is wethebestmusic'),
+    ('Bob', 2, 'That was a close one!'), ('pozboi', 2, 'Bemo seems like a chill guy'), ('Jay-Z', 2, 'This one made me laugh too!'),
+    ('Pitbull', 3, 'I had an octopus once...'), ('Jay-Z', 3, 'Hey guys, please help me finish this story. Much appreciated!'),
+    ('DJ Khaled', 3, 'This story is the worst!');
+
+insert into likes values 
+	('joe', 1), ('pozboi', 1), ('Pitbull', 1), ('Jay-Z', 1), ('DJ Khaled', 1), ('Bob', 1),
+    ('joe', 2), ('pozboi', 2), ('Pitbull', 2), ('Bob', 3);
 
 
 CREATE VIEW full_story_data AS
