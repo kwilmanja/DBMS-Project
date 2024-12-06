@@ -100,16 +100,69 @@ CREATE TABLE describe_prompt (
 
 insert into account values 
 	('pozboi', 'pozboi123@gmail.com', '7205607869', 'hello'),
-	('joe', 'joe@gmail.com', '7202444008', 'world'),
-	('a', 'a', 'a', 'a');	
+	('joe', 'joe@gmail.com', '7203218756', 'world'),
+    ('Jay-Z', 'jay_zee@outlook.com', null, 'queenbee'),
+    ('Pitbull', 'mrworldwide@gmail.com', null, 'notadog'),
+    ('DJ Khaled', 'khaled@msn.com', '8189765252', 'wethebestmusic'),
+    ('Bob', 'bob@thebuilder.org', '5557778888', 'yeswecan');	
 
-insert into prompt (name, description, username)
-	values ('Prompt1', 'a prompt about something', 'joe'),
-	('Prompt2', 'another prompt about something', 'joe');
+insert into prompt (name, description, username) values 
+	('Lost in the Blue Abyss', 'A curious young explorer is swept away into the vast, 
+    colorful depths of the ocean, where unlikely friends help navigate dangers and reunite 
+    with family.', 'pozboi'),
+    ('Echoes in the Empty Hotel', 'A winter caretaker and his family find themselves trapped 
+    in a sprawling, isolated lodge where eerie forces and personal demons blur the line between 
+    reality and madness.', 'pozboi'),
+	('Isle of Dinosaurs', 'A revolutionary wildlife sanctuary brings ancient creatures back 
+    to life, but nature\'s unpredictability turns a dream into a thrilling fight for survival.', 
+    'joe'),
+    ('The Cosmic Traveler\'s Handbook', 'An ordinary human is swept into an absurd intergalactic 
+    adventure, armed with a peculiar guidebook and a knack for stumbling into cosmic chaos.', 
+    'joe'),
+    ('The Tale of True Hearts and Peril', 'A daring hero, a spirited princess, and a cast of 
+    quirky companions embark on a whimsical journey through danger, love, and legendary feats.', 
+    'joe'),
+    ('Life in the Family', 'A young hustler rises through the ranks of a powerful crime syndicate, 
+    navigating loyalty, betrayal, and the high cost of living the good life.', 'joe'),
+    ('The Path to Memory Creek', 'Four childhood friends embark on a life-changing journey to 
+    uncover a secret, discovering the bonds of friendship and the weight of growing up along 
+    the way.', 'Jay-Z'),
+    ('Epic Night: The Final Countdown', 'Two lifelong friends set out on a chaotic quest to 
+    make their last high school party unforgettable, facing hilarious mishaps and heartfelt 
+    revelations along the way.', 'Pitbull'),
+    ('Christmas Gone Haywire', 'A well-meaning family\'s quest for the perfect Christmas 
+    spirals into chaos as unexpected guests, wild antics, and festive disasters pile up.', 
+    'DJ Khaled'),
+    ('Builder Bob and the Big Fix-Up', 'A cheerful builder and his team of talking tools tackle 
+    their biggest challenge yet, proving that teamwork and determination can solve any problem.', 
+    'Bob'),
+    ('Critter Crew to the Rescue', 'A trio of pint-sized heroes springs into action, using smarts, 
+    teamwork, and catchy tunes to help animals in need around the world.', 'Bob');
+    
+insert into genre values 
+	('Thriller'), ('Mystery'), ('Romance'), ('Adventure'), ('Sci-fi'), ('Non-Fiction'), ('Horror'),
+	('Comedy');
 
-insert into passage (text, username, previous_passage, prompt)
-	values ('hhhhhhhhhhhhh', 'joe', null, 1),
-	('gggggggggggggg', 'joe', null, 1);
+insert into describe_prompt values
+	(1, 'Adventure'), (2, 'Horror'), (2, 'Thriller'), (2, 'Mystery'), (3, 'Thriller'), (3, 'Sci-fi'), (3, 'Adventure'),
+    (4, 'Sci-fi'), (4, 'Adventure'), (5, 'Romance'), (5, 'Adventure'), (6, 'Adventure'), (6, 'Non-Fiction'),
+    (7, 'Adventure'), (8, 'Comedy'), (8, 'Adventure'), (9, 'Non-fiction'), (9, 'Comedy'), (10, 'Thriller'), 
+    (10, 'Comedy'), (11, 'Adventure');
+
+insert into passage (text, username, previous_passage, prompt) values 
+	('A young fish, eager to explore the vast ocean, swims beyond the safety of his coral home.', 'user1', NULL, 1);
+
+insert into passage (text, username, previous_passage, prompt) values 
+	('He meets a wise old sea turtle who offers to guide him through the currents.', 'user1', 1, 2);
+
+-- Branch 2: The young fish gets caught in a fishing net
+insert into passage (text, username, previous_passage, prompt) 
+values ('Caught by a sudden movement, the young fish is trapped in a net, struggling to escape.', 'user1', 1, 3);
+
+-- Branch 3: The young fish discovers a glowing cave
+insert into passage (text, username, previous_passage, prompt) 
+values ('Drawn by shimmering light, the young fish discovers a glowing cave filled with hidden treasures.', 'user1', 1, 4);
+
 
 insert into passage (text, username, previous_passage, prompt)
 	values ('jjjjjjjjjjj', 'pozboi', 1, 1),
@@ -125,8 +178,6 @@ insert into comment (username, story_id, text) values ('joe', 1, 'good story'), 
 insert into likes values ('joe', 1), ('pozboi', 1);
 
 insert into theme values ('Survival'), ('Family'), ('Love'), ('Coming-of-Age'), ('Friendship'), ('Good and Evil');
-
-insert into genre values ('Thriller'), ('Mystery'), ('Romance'), ('Adventure'), ('Sci-fi'), ('Non-Fiction');
 
 
 CREATE VIEW full_story_data AS
