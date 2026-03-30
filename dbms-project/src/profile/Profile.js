@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import * as authService from "../users/auth-service";
 import HomeStoryCard from "../home/HomeStoryCard";
 import DetailsPassageCard from "../details/DetailsPassageCard";
 import PromptCard from "../prompts/PromptCard";
 
-
-
 function Profile() {
     const { username } = useParams();
     const { currentUser } = useSelector((state) => state.auth);
-
 
     const [profile, setProfile] = useState({});
     const [stories, setStories] = useState([]);
     const [passages, setPassages] = useState([]);
     const [prompts, setPrompts] = useState([]);
+    const [activeTab, setActiveTab] = useState('stories');
 
-
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-
-    const edit = () => {
-        navigate('/profile/edit');
-    };
 
     useEffect(() => {
         async function fetchData() {
@@ -35,76 +27,124 @@ function Profile() {
                 user = await authService.findUserByUsername(username);
                 setProfile(user);
                 content = await authService.getUserContent(username);
-                setStories(content.stories[0]);
-                setPassages(content.passages);
-                setPrompts(content.prompts);
             } else if (currentUser) {
                 setProfile(currentUser);
                 content = await authService.getUserContent(currentUser.username);
-                setStories(content.stories[0]);
-                setPassages(content.passages);
-                setPrompts(content.prompts);
             } else {
-                navigate("/");
+                navigate('/');
+                return;
             }
+            setStories(content.stories[0] || []);
+            setPassages(content.passages || []);
+            setPrompts(content.prompts || []);
         }
         fetchData();
     }, [username, currentUser]);
 
+    const isOwnProfile = currentUser &&
+        (username ? username === currentUser.username : true);
+
+    const initial = profile.username ? profile.username[0].toUpperCase() : '?';
+
+    const tabs = [
+        { id: 'stories',  label: 'Stories',  count: stories.length  },
+        { id: 'passages', label: 'Passages', count: passages.length },
+        { id: 'prompts',  label: 'Prompts',  count: prompts.length  },
+    ];
+
     return (
-
-        <div className="mb-5">
-            {profile && (
-                <div className="row mt-3 mb-3" >
-                    <div className="col-8">
-                        <h1>{profile.username}'s Profile</h1>
-                        <h4>Email: {profile.email}</h4>
-                        <h4>Phone Number: {profile.phone_no}</h4>
-                        {currentUser && profile &&
-                            ((currentUser.username === profile.username) ?
-                                <button className="btn btn-dark" onClick={edit}>Edit</button>
-                                : <div />)
-                        }
-
-                        <h3>Stories:</h3>
-                        {stories.length > 0 ? (
-                            <ul>
-                                {stories.map((story) => (
-                                    <HomeStoryCard key={story.story_id} story={story} />
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No stories yet.</p>
-                        )}
-
-                        <h3>Passages:</h3>
-                        {passages.length > 0 ? (
-                            <ul>
-                                {passages.map((passage) =>
-                                    <DetailsPassageCard key={passage.id} passage={passage} />
-                                )}
-                            </ul>
-                        ) : (
-                            <p>No passages yet.</p>
-                        )}
-
-                        <h3>Prompts:</h3>
-                        {prompts.length > 0 ? (
-                            <ul>
-                                {prompts.map((prompt) => (
-                                    <PromptCard key={prompt.id} prompt={prompt} />
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No prompts yet.</p>
-                        )}
-
-                    </div>
+        <div className="sc-page">
+            {/* Profile header */}
+            <div className="sc-profile-header">
+                <div className="sc-profile-avatar">{initial}</div>
+                <div>
+                    <h1 className="sc-profile-name">{profile.username}</h1>
+                    {profile.email && (
+                        <div className="sc-profile-detail">{profile.email}</div>
+                    )}
+                    {profile.phone_no && (
+                        <div className="sc-profile-detail">{profile.phone_no}</div>
+                    )}
                 </div>
+                {isOwnProfile && (
+                    <div style={{ marginLeft: 'auto' }}>
+                        <button
+                            className="sc-btn sc-btn-ghost sc-btn-sm"
+                            onClick={() => navigate('/profile/edit')}>
+                            Edit profile
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Tabs */}
+            <div style={{
+                display: 'flex',
+                gap: '4px',
+                borderBottom: '1px solid var(--border)',
+                marginBottom: '28px'
+            }}>
+                {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            borderBottom: activeTab === tab.id
+                                ? '2px solid var(--accent)'
+                                : '2px solid transparent',
+                            padding: '10px 18px',
+                            fontFamily: 'var(--font-ui)',
+                            fontSize: '0.82rem',
+                            fontWeight: 500,
+                            color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
+                            cursor: 'pointer',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            transition: 'color 0.2s, border-color 0.2s',
+                            marginBottom: '-1px',
+                        }}>
+                        {tab.label}
+                        <span style={{
+                            marginLeft: '6px',
+                            fontWeight: 400,
+                            opacity: 0.7
+                        }}>
+                            {tab.count}
+                        </span>
+                    </button>
+                ))}
+            </div>
+
+            {/* Tab content */}
+            {activeTab === 'stories' && (
+                stories.length > 0
+                    ? stories.map(story => (
+                        <div key={story.story_id} style={{ marginBottom: '16px' }}>
+                            <HomeStoryCard story={story} />
+                        </div>
+                    ))
+                    : <div className="sc-empty">No stories yet.</div>
             )}
 
+            {activeTab === 'passages' && (
+                passages.length > 0
+                    ? passages.map(passage => (
+                        <DetailsPassageCard key={passage.id} passage={passage} />
+                    ))
+                    : <div className="sc-empty">No passages yet.</div>
+            )}
+
+            {activeTab === 'prompts' && (
+                prompts.length > 0
+                    ? prompts.map(prompt => (
+                        <PromptCard key={prompt.id} prompt={prompt} />
+                    ))
+                    : <div className="sc-empty">No prompts yet.</div>
+            )}
         </div>
     );
-
 }
+
 export default Profile;

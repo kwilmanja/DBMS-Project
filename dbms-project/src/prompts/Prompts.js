@@ -4,83 +4,47 @@ import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
 import { getAllPromptsThunk } from "../stories/stories-thunks";
 
-
 export default function Prompts() {
-
     const { currentUser } = useSelector((state) => state.auth);
-
     const [prompts, setPrompts] = useState([]);
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchData() {
-            const promptsAction = await dispatch(getAllPromptsThunk());
             try {
-                const prompts = promptsAction.payload.slice();
-                setPrompts(prompts)
-            } catch (error) {
-                if (error.response) {
-                    console.log('Error status:', error.response.status);
-                    console.log('Error Message', error.message);
-                } else if (error.request) {
-                    console.log('No response received:', error.request);
-                } else {
-                    console.log('Error:', error.message);
-                }
+                const action = await dispatch(getAllPromptsThunk());
+                setPrompts(action.payload.slice());
+            } catch (e) {
+                console.error(e);
             }
         }
         fetchData();
     }, []);
 
-    const handleCreatePromptClick = () => {
-        navigate("/prompts/create");
-    }
-
-    const header = {
-        "color": "white",
-        "text-shadow":
-            "-3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000"
-    }
-
-    const adjustment = {
-        "bottom": "-30px"
-    }
-
     return (
-        <div className="row" style={{ marginBottom: '50px' }}>
-
-            <div className="col-md-1 col-lg-2 col-xl-3">
-
+        <div className="sc-page">
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <h1 className="sc-page-title" style={{ textAlign: 'left', margin: 0 }}>Prompts</h1>
+                {currentUser && (
+                    <button
+                        className="sc-btn sc-btn-primary sc-btn-sm"
+                        onClick={() => navigate('/prompts/create')}>
+                        + New Prompt
+                    </button>
+                )}
             </div>
+            <p className="sc-page-subtitle" style={{ textAlign: 'left', marginBottom: '36px' }}>
+                Choose a prompt and start your story
+            </p>
 
-            <div className="col-auto col-md-10 col-lg-8 col-xl-6">
+            <hr className="sc-divider" style={{ marginTop: 0 }} />
 
-                <h1 className="text-center" style={header}>Prompts:</h1>
-
-                <div style={adjustment}>
-                    {currentUser &&
-                        <button className="create-prompt" onClick={handleCreatePromptClick}>
-                            Create new prompt
-                        </button>
-                    }
-                </div>
-
-                <hr/>
-
-                <div style={adjustment}>
-                    {prompts && prompts.map((prompt) =>
-                        <PromptCard prompt={prompt} />
-                    )}
-                </div>
-
-            </div>
-
-            <div className="col-md-1 col-lg-2 col-xl-3">
-
-            </div>
-
+            {prompts.length === 0 ? (
+                <div className="sc-loading">Loading prompts…</div>
+            ) : (
+                prompts.map(prompt => <PromptCard key={prompt.id} prompt={prompt} />)
+            )}
         </div>
     );
 }

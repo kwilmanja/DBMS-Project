@@ -1,22 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import MakeStoryCard from "./MakeStoryCard";
-import { getPromptByIdThunk, getPassageByIdThunk, 
-    createPassageThunk, getNextPassagesThunk, 
-    publishStoryThunk,
-    getAllThemesThunk} from "../stories/stories-thunks";
+import {
+    getPromptByIdThunk, getPassageByIdThunk,
+    createPassageThunk, getNextPassagesThunk,
+    publishStoryThunk, getAllThemesThunk
+} from "../stories/stories-thunks";
 import { useNavigate, useParams } from "react-router-dom";
-import {Link} from "react-router-dom";
-import { getNextPassages } from "../stories/stories-service";
-
 
 export default function Make() {
-
     const { currentUser } = useSelector((state) => state.auth);
     const { prompt } = useSelector((state) => state.stories);
-    const {nextPassages} = useSelector((state) => state.stories);
+    const { nextPassages } = useSelector((state) => state.stories);
 
-    const {passageId, promptId} = useParams();
+    const { passageId, promptId } = useParams();
 
     const [passage, setPassage] = useState({});
     const [newPassage, setNewPassage] = useState({});
@@ -28,280 +25,250 @@ export default function Make() {
     const [selectedThemes, setSelectedThemes] = useState([]);
     const [themes, setThemes] = useState([]);
 
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-
     useEffect(() => {
-
         async function fetchData() {
-
-            if(passageId){
-                const passageAction = await dispatch(getPassageByIdThunk(passageId))
+            if (passageId) {
+                const passageAction = await dispatch(getPassageByIdThunk(passageId));
                 setPassage(passageAction.payload);
-                dispatch(getPromptByIdThunk( passageAction.payload.prompt));
-            } else{
+                dispatch(getPromptByIdThunk(passageAction.payload.prompt));
+            } else {
                 setPassage(null);
-                dispatch(getPromptByIdThunk( promptId));
+                dispatch(getPromptByIdThunk(promptId));
             }
-    
-            dispatch(getNextPassagesThunk({previousPassageId: passageId, promptId: promptId}));
-
-            const themesAction = await dispatch(getAllThemesThunk())
-            setThemes(themesAction.payload.map((themeObject) => (themeObject.name)));
-
+            dispatch(getNextPassagesThunk({ previousPassageId: passageId, promptId }));
+            const themesAction = await dispatch(getAllThemesThunk());
+            setThemes(themesAction.payload.map(t => t.name));
             setContent('');
             setFailed(false);
         }
-
         fetchData();
     }, [passageId]);
 
-
     const createPassage = async () => {
-        if(content.length === 0){
-            return;
-        }
-
-        const passageToCreate ={
-            text: content,
-            username: currentUser.username,
-            previousPassage: passageId,
-            prompt: prompt.id
-        }
-        try{
-            const createAction = await dispatch(createPassageThunk(passageToCreate));
-            navigate('/make/' + createAction.payload.id);
-        } catch (error){
-            setFailed(true);
-        }
-    };
-
-    const beginPublishing = async () => {
-        if(content.length === 0){
-            return;
-        }
-
-        const passageToAdd ={
+        if (!content.trim()) return;
+        const passageToCreate = {
             text: content,
             username: currentUser.username,
             previousPassage: passageId,
             prompt: prompt.id
         };
+        try {
+            const action = await dispatch(createPassageThunk(passageToCreate));
+            navigate('/make/' + action.payload.id);
+        } catch {
+            setFailed(true);
+        }
+    };
 
+    const beginPublishing = () => {
+        if (!content.trim()) return;
+        setNewPassage({
+            text: content,
+            username: currentUser.username,
+            previousPassage: passageId,
+            prompt: prompt.id
+        });
         setPublishing(true);
         setFailed(false);
-        setNewPassage(passageToAdd);
     };
 
     const publishStory = async () => {
-        if(title.length === 0 || description.length === 0){
-            return;
-        }
-
-        try{
-            const passageStory ={
+        if (!title.trim() || !description.trim()) return;
+        try {
+            const action = await dispatch(publishStoryThunk({
                 passage: newPassage,
-                title: title,
-                description: description,
+                title,
+                description,
                 themes: selectedThemes
-            };
-
-            const publishAction = await dispatch(publishStoryThunk(passageStory));
-            navigate('/details/' + publishAction.payload);
-        } catch (error){
+            }));
+            navigate('/details/' + action.payload);
+        } catch {
             setFailed(true);
             setPublishing(false);
         }
     };
 
-
     const handleCheckbox = (e) => {
         const { value, checked } = e.target;
-        setSelectedThemes((prev) =>
-            checked ? [...prev, value] 
-            : 
-            prev.filter((option) => option !== value)
+        setSelectedThemes(prev =>
+            checked ? [...prev, value] : prev.filter(o => o !== value)
         );
     };
 
-
-
-    const textboxStyle = {
-        "width": "100%"
-    };
-
-    const header = {
-        "color": "white",
-        "text-shadow":
-            "-3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000"
-    }
-
     return (
-        
-        <div className="row" style={{ marginBottom: '50px' }}>
+        <div className="sc-page">
+            <h1 className="sc-page-title" style={{ textAlign: 'left', marginBottom: '6px' }}>
+                {publishing ? 'Publish your story' : (passage ? 'Continue the story' : 'Begin the story')}
+            </h1>
+            <p className="sc-page-subtitle" style={{ textAlign: 'left', marginBottom: '32px' }}>
+                {publishing
+                    ? 'Give your story a title and description'
+                    : (passage ? 'Add the next passage or branch from another' : 'Write the opening passage')}
+            </p>
 
-            
-            <div className="col-md-1 col-lg-2 col-xl-3">
-            </div>
+            {/* Prompt card */}
+            {prompt && <MakeStoryCard passage={prompt} />}
 
+            {publishing ? (
+                <div>
+                    {failed && <p className="sc-error">That passage already exists — check below.</p>}
 
-            <div className="col-auto col-md-10 col-lg-8 col-xl-6">
+                    {newPassage && (
+                        <div style={{ margin: '20px 0' }}>
+                            <div className="sc-passage-connector">│</div>
+                            <MakeStoryCard passage={newPassage} />
+                        </div>
+                    )}
 
-                <h1 className="text-center" style={header}>Make a Story:</h1>
-                <MakeStoryCard passage={prompt}/>
+                    <div className="sc-publish-panel">
+                        <h3 className="sc-publish-title">Story details</h3>
 
-                {publishing ? 
+                        <div className="sc-field">
+                            <label className="sc-label">Title</label>
+                            <input
+                                className="sc-input"
+                                type="text"
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                                placeholder="Give your story a title"
+                            />
+                        </div>
 
+                        <div className="sc-field">
+                            <label className="sc-label">Description</label>
+                            <textarea
+                                className="sc-textarea"
+                                rows="3"
+                                value={description}
+                                onChange={e => setDescription(e.target.value)}
+                                placeholder="A short description of your story"
+                            />
+                        </div>
 
-                    
-
-                    <div>
-                        {failed && (<p>Passage already exists, look below!</p>)}
-
-                        {newPassage &&
-                            (<MakeStoryCard passage={newPassage}/>)}
-
-
-                    <div className="mb-3">
-                    <label htmlFor="title" className="form-label">Title</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Enter the title (required)"
-                        required
-                    />
-                    </div>
-
-                    <div className="mb-3">
-                    <label htmlFor="description" className="form-label">Description</label>
-                    <textarea
-                        className="form-control"
-                        rows="4"
-                        value={description}
-                        onChange={(event) => setDescription(event.target.value)}
-                        placeholder="Enter a description (required)"
-                        required
-                    />
-                    </div>
-
-                    <div>
-                        <h3>Select Themes:</h3>
-                        <form>
-                            {themes.map((theme) => (
-                            <div className="form-check">
-                                <input
-                                type="checkbox"
-                                value={theme}
-                                checked={selectedThemes.includes(theme)}
-                                onChange={handleCheckbox}
-                                className="form-check-input"/>
-
-                                <label className="form-check-label">
-                                    {theme}
-                                </label>
+                        <div className="sc-field">
+                            <label className="sc-label">Themes</label>
+                            <div className="sc-checkbox-grid">
+                                {themes.map(theme => (
+                                    <div key={theme} className="sc-checkbox-pill">
+                                        <input
+                                            type="checkbox"
+                                            id={`theme-${theme}`}
+                                            value={theme}
+                                            checked={selectedThemes.includes(theme)}
+                                            onChange={handleCheckbox}
+                                        />
+                                        <label htmlFor={`theme-${theme}`}>{theme}</label>
+                                    </div>
+                                ))}
                             </div>
-                            ))}
-                        </form>
+                        </div>
+
+                        <div className="sc-btn-row" style={{ marginTop: '20px' }}>
+                            <button className="sc-btn sc-btn-primary" onClick={publishStory}
+                                disabled={!title.trim() || !description.trim()}>
+                                Publish Story
+                            </button>
+                            <button className="sc-btn sc-btn-ghost"
+                                onClick={() => setPublishing(false)}>
+                                Cancel
+                            </button>
+                        </div>
                     </div>
-
-
-
-                        <button type="button" className="btn btn-danger d-inline float-end" onClick={() => {setPublishing(false)}}>
-                            Cancel Publishing</button>
-
-                        <button type="button" className="btn btn-primary d-inline" onClick={publishStory}>
-                            Publish Story</button>
-
-
-                    </div>
-                :
-                    <div>
-
-                        {passage && 
-                            <div>
-                                <button style={textboxStyle} className="create-story" 
+                </div>
+            ) : (
+                <div>
+                    {/* Current passage (back-navigation) */}
+                    {passage && (
+                        <div style={{ margin: '20px 0' }}>
+                            <div className="sc-passage-connector">│</div>
+                            <div
+                                className="sc-passage link-passage"
                                 onClick={() => {
-                                    if(passage.previous_passage){
+                                    if (passage.previous_passage) {
                                         navigate('/make/' + passage.previous_passage);
                                     } else {
                                         navigate('/make/begin/' + prompt.id);
                                     }
                                 }}>
-                                    <MakeStoryCard passage={passage}/>
+                                <div className="sc-passage-author">
+                                    {passage.username}
+                                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>
+                                        · click to go back
+                                    </span>
+                                </div>
+                                <p className="sc-passage-text">{passage.text}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Writing area */}
+                    {currentUser ? (
+                        <div style={{ margin: '20px 0' }}>
+                            <div className="sc-passage-connector">│</div>
+                            <div className="sc-editor-wrap">
+                                <div className="sc-editor-header">
+                                    <span className="sc-editor-dot" />
+                                    Your passage
+                                </div>
+                                <textarea
+                                    className="sc-editor-textarea"
+                                    rows="6"
+                                    value={content}
+                                    placeholder="Write your passage here…"
+                                    onChange={e => setContent(e.target.value)}
+                                />
+                            </div>
+
+                            {failed && <p className="sc-error">That passage already exists — check the options below.</p>}
+
+                            <div className="sc-btn-row">
+                                <button className="sc-btn sc-btn-ghost" onClick={createPassage}
+                                    disabled={!content.trim()}>
+                                    Finish Passage
+                                </button>
+                                <button className="sc-btn sc-btn-primary" onClick={beginPublishing}
+                                    disabled={!content.trim()}>
+                                    Publish Story →
                                 </button>
                             </div>
-                        }
-
-                        <div>
-                        
-                        <hr/>
-
-                        {passage ? 
-                            <h5>Continue the Story: </h5>
-                            :
-                            <h5>Begin the Story: </h5>
-                        }
-
-
-                        {currentUser && (
-
-                            <div>
-                                <textarea
-                                    style={textboxStyle}
-                                    rows="4"
-                                    value={content}
-                                    placeholder="Write your story here!"
-                                    onChange={(event) => {
-                                        setContent(event.target.value);
-                                    }}
-                                />
-
-                                <div style={textboxStyle}>
-                                    <div>
-
-                                        <button type="button" className="btn btn-primary d-inline" onClick={createPassage}>
-                                                Finish Passage</button>
-
-                                        <button type="button" className="btn btn-success float-end d-inline" onClick={beginPublishing}>
-                                        Publish Story</button>
-
-                                        {failed && (<p>Passage already exists, look below!</p>)}
-                                    </div>
-                                </div>  
-                            </div>
-                        )}
-
-
                         </div>
+                    ) : (
+                        <p style={{ fontFamily: 'var(--font-body)', color: 'var(--text-muted)', fontStyle: 'italic', margin: '24px 0' }}>
+                            Log in to contribute to this story.
+                        </p>
+                    )}
 
-
-                        <hr/>
-
-                        <h5>Or Choose Another's to Continue: </h5>
-
-
-                        {nextPassages && nextPassages.map((p) =>
-                            <button style={textboxStyle} className="create-story" 
-                            onClick={() => {
-                                navigate('/make/' + p.id);
+                    {/* Other passages to branch from */}
+                    {nextPassages && nextPassages.length > 0 && (
+                        <div style={{ marginTop: '32px' }}>
+                            <hr className="sc-divider" />
+                            <p style={{
+                                fontFamily: 'var(--font-ui)',
+                                fontSize: '0.78rem',
+                                color: 'var(--text-muted)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.06em',
+                                marginBottom: '16px'
                             }}>
-                                <MakeStoryCard passage={p}/>
-                            </button>
-                        )}
-                    </div>
-                }
-
-                
-            </div>
-
-            <div className="col-md-1 col-lg-2 col-xl-3">
-
-            </div>
-
+                                Or continue from another passage
+                            </p>
+                            {nextPassages.map(p => (
+                                <div
+                                    key={p.id}
+                                    className="sc-passage link-passage"
+                                    style={{ marginBottom: '12px' }}
+                                    onClick={() => navigate('/make/' + p.id)}>
+                                    <div className="sc-passage-author">{p.username}</div>
+                                    <p className="sc-passage-text">{p.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

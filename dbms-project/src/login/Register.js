@@ -1,151 +1,118 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import {registerThunk, loginThunk} from "../users/auth-thunks";
+import { Link } from "react-router-dom";
+import { registerThunk, loginThunk } from "../users/auth-thunks";
+
 function Register() {
-    const [credentials, setCredentials] = useState(
-        {
-            username: '',
+    const [credentials, setCredentials] = useState({
+        username: '',
         password: '',
         email: '',
         phone_no: '',
         role: 'user',
         isAdmin: false
-        });
-
-
+    });
     const [invalid, setInvalid] = useState('');
     const [failed, setFailed] = useState(false);
 
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const update = (field) => (e) =>
+        setCredentials(prev => ({ ...prev, [field]: e.target.value }));
+
     const handleRegister = async () => {
+        setInvalid('');
+        setFailed(false);
+
+        if (!credentials.username) return setInvalid('Username is required');
+        if (!credentials.password) return setInvalid('Password is required');
+        if (!credentials.email)    return setInvalid('Email is required');
+        if (credentials.username.length > 100) return setInvalid('Username too long');
+        if (credentials.password.length > 100) return setInvalid('Password too long');
+        if (credentials.email.length > 100)    return setInvalid('Email too long');
+        if (credentials.phone_no.length > 10)  return setInvalid('Phone number too long');
+
         try {
-
-            setInvalid('');
-            setFailed(false);
-
-            if (credentials.username.length > 100){
-                setInvalid("Username is too long");
-                return;
-            } else if (credentials.password.length > 100){
-                setInvalid("Password is too long");
-                return;
-            }else if(credentials.email.length > 100){
-                setInvalid("Email is too long");
-                return;
-            } else if (credentials.phone_no.length > 10){
-                setInvalid("Phone number is too long");
-                return;
-            }
-            
-            if (credentials.username.length === 0){
-                setInvalid("Username must not be blank");
-                return;
-            } else if (credentials.password.length === 0){
-                setInvalid("Password must not be blank");
-                return;
-            }else if(credentials.email.length === 0){
-                setInvalid("Email must not be blank");
-                return;
-            }
-            
-
-            const registrationAction = await dispatch(registerThunk(credentials));
-            if(registrationAction.error){
-                setFailed(true);
-                return;
-            }
-
+            const regAction = await dispatch(registerThunk(credentials));
+            if (regAction.error) { setFailed(true); return; }
             await dispatch(loginThunk(credentials));
-            navigate("/profile");
+            navigate('/profile');
         } catch (e) {
-            alert(e);
+            setFailed(true);
         }
     };
+
     return (
-        <div>
-            <h1>Register</h1>
-            {failed && (<p>Duplicate Username!</p>)}
-            {invalid && (invalid !== '') && (<p>{invalid}</p>)}
+        <div className="sc-page-centered">
+            <div className="sc-form" style={{ maxWidth: '520px' }}>
+                <h1 className="sc-form-title">Create account</h1>
+                <p className="sc-form-subtitle">Join the collaborative storytelling community</p>
 
-            <div>
-                <label>Username</label>
-                <input className="form-control"
-                       type="text" value={credentials.username}
-                       onChange={(event) => {
-                           const newCreds = {
-                               ...credentials,
-                               username: event.target.value,
-                           };
-                           setCredentials(newCreds);
-                       }}
-                />
-            </div>
-            <div>
-                <label>Password</label>
-                <input className="form-control"
-                       type="password" value={credentials.password}
-                       onChange={(event) => {
-                           const newCreds = {
-                               ...credentials,
-                               password: event.target.value,
-                           };
-                           setCredentials(newCreds);
-                       }}
-                />
-            </div>
-            <div>
-                <label>Email</label>
-                <input className="form-control"
-                       type="text" value={credentials.email}
-                       onChange={(event) => {
-                           const newCreds = {
-                               ...credentials,
-                               email: event.target.value,
-                           };
-                           setCredentials(newCreds);
-                       }}
-                />
-            </div>
-            <div>
-                <label>Phone Number</label>
-                <input className="form-control"
-                       type="text" value={credentials.phone_no}
-                       onChange={(event) => {
-                           const newCreds = {
-                               ...credentials,
-                               phone_no: event.target.value,
-                           };
-                           setCredentials(newCreds);
-                       }}
-                />
-            </div>
-            <div>
-                <label htmlFor="exampleSelect1" className="mr-2">Role</label>
-                <select className="form-select" id="exampleSelect1"
-                        defaultValue={credentials.role}
-                        onChange={(event) => {
-                            const newCreds = {
-                            ...credentials,
-                            role: event.target.value,
-                            isAdmin: event.target.value === 'admin'
-                        };
-                            setCredentials(newCreds);
-                        }}>
-                    <option>user</option>
-                    <option>admin</option>
-                </select>
-            </div>
+                {failed && <p className="sc-error" style={{ marginBottom: '16px' }}>That username is already taken.</p>}
+                {invalid && <p className="sc-error" style={{ marginBottom: '16px' }}>{invalid}</p>}
 
-            <div className="pt-2">
-                <button className="btn btn-info" onClick={handleRegister}>
-                    Register
+                <div className="sc-field">
+                    <label className="sc-label">Username</label>
+                    <input className="sc-input" type="text" value={credentials.username}
+                        onChange={update('username')} autoFocus autoComplete="username" />
+                </div>
+
+                <div className="sc-field">
+                    <label className="sc-label">Password</label>
+                    <input className="sc-input" type="password" value={credentials.password}
+                        onChange={update('password')} autoComplete="new-password" />
+                </div>
+
+                <div className="sc-field">
+                    <label className="sc-label">Email</label>
+                    <input className="sc-input" type="email" value={credentials.email}
+                        onChange={update('email')} autoComplete="email" />
+                </div>
+
+                <div className="sc-field">
+                    <label className="sc-label">Phone Number <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                    <input className="sc-input" type="tel" value={credentials.phone_no}
+                        onChange={update('phone_no')} autoComplete="tel" />
+                </div>
+
+                <div className="sc-field">
+                    <label className="sc-label">Role</label>
+                    <select
+                        className="sc-select"
+                        value={credentials.role}
+                        onChange={(e) => setCredentials(prev => ({
+                            ...prev,
+                            role: e.target.value,
+                            isAdmin: e.target.value === 'admin'
+                        }))}>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <button
+                    className="sc-btn sc-btn-primary sc-btn-full"
+                    style={{ marginTop: '8px' }}
+                    onClick={handleRegister}
+                    disabled={!credentials.username || !credentials.password || !credentials.email}>
+                    Create Account
                 </button>
+
+                <p style={{
+                    textAlign: 'center',
+                    marginTop: '20px',
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '0.82rem',
+                    color: 'var(--text-muted)'
+                }}>
+                    Already have an account?{' '}
+                    <Link to="/login">Sign in</Link>
+                </p>
             </div>
         </div>
     );
-
 }
+
 export default Register;

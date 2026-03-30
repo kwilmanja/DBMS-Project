@@ -1,60 +1,32 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import * as authService from "../users/auth-service";
 
 const PromptCard = ({ prompt }) => {
+    if (!prompt) return null;
 
-  const { currentUser } = useSelector((state) => state.auth);
+    const genres = prompt.genres
+        ? prompt.genres.split(',').map(g => g.trim()).filter(Boolean)
+        : [];
 
-  const inline = {
-    "display": "inline"
-  }
+    return (
+        <Link to={'/prompts/' + prompt.id} className="sc-prompt-card">
+            <h3 className="sc-prompt-title">{prompt.name}</h3>
 
-  const card = {
-    "width": "100%",
-  }
-
-  const link = {
-    "text-decoration": "none",
-    "color": "black"
-  }
-
-  return (
-    <>
-      {prompt &&
-        <div className="col">
-          <Link to={'/prompts/' + prompt.id} style={link}>
-            <div className="card mb-3" style={card}>
-              <div className="card-header align-items-center" style={inline}>
-                <h3 style={inline}>{prompt.name} </h3>
-              </div>
-              <div className="card-body">
-
-                <div className="d-flex">
-                  <h6 className="text-muted" style={{ marginRight: '8px' }}>Description: </h6>
-                  <h6 className="ml-">{prompt.description}</h6>
+            {genres.length > 0 && (
+                <div className="sc-tags" style={{ margin: '8px 0' }}>
+                    {genres.map((g, i) => <span key={i} className="sc-tag">{g}</span>)}
                 </div>
+            )}
 
-                <div className="d-flex">
-                  <h6 className="text-muted" style={{ marginRight: '8px' }}>Genres:</h6>
-                  <h6>{prompt.genres}</h6>
-                </div>
+            {prompt.description && (
+                <p className="sc-prompt-desc">{prompt.description}</p>
+            )}
 
-                <div className="row">
-                  <div className="d-flex col">
-                    <h6 className="text-muted" style={{ marginRight: '8px' }}>Created By:</h6>
-                    <h6>{prompt.username}</h6>
-                  </div>
-                </div>
-
-              </div>
+            <div className="sc-prompt-byline">
+                by {prompt.username}
             </div>
-          </Link>
-        </div>
-      }
-    </>
-
-  );
+        </Link>
+    );
 };
+
 export default PromptCard;

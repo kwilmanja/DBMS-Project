@@ -4,91 +4,90 @@ import React, { useEffect, useState } from "react";
 import { getAllStoriesByPromptIdThunk, getPromptByIdThunk } from "../stories/stories-thunks.js";
 import HomeStoryCard from "../home/HomeStoryCard.js";
 
-
 export default function PromptStories() {
+    const { currentUser } = useSelector((state) => state.auth);
+    const { promptId } = useParams();
+    const [prompt, setPrompt] = useState();
+    const [stories, setStories] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state) => state.auth);
-  const { promptId } = useParams();
-  const [prompt, setPrompt] = useState();
-  const [stories, setStories] = useState();
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const storiesAction = await dispatch(getAllStoriesByPromptIdThunk(promptId));
-        const stories = storiesAction.payload.slice();
-        setStories(stories);
-        const promptAction = await dispatch(getPromptByIdThunk(promptId));
-        const prompt = promptAction.payload;
-        setPrompt(prompt)
-      } catch (error) {
-        if (error.response) {
-          console.log('Error status:', error.response.status);
-          console.log('Error Message', error.message);
-        } else if (error.request) {
-          console.log('No response received:', error.request);
-        } else {
-          console.log('Error:', error.message);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const storiesAction = await dispatch(getAllStoriesByPromptIdThunk(promptId));
+                setStories(storiesAction.payload.slice());
+                const promptAction = await dispatch(getPromptByIdThunk(promptId));
+                setPrompt(promptAction.payload);
+            } catch (e) {
+                console.error(e);
+            }
         }
-      }
+        fetchData();
+    }, []);
+
+    if (!prompt) {
+        return <div className="sc-page"><div className="sc-loading">Loading…</div></div>;
     }
-    fetchData();
-  }, []);
 
-  const header = {
-    "color": "white",
-    "text-shadow": "-3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000"
-  }
+    const genres = prompt.genres
+        ? prompt.genres.split(',').map(g => g.trim()).filter(Boolean)
+        : [];
 
-  const background = {
-    "background-image": "url('images/bike2.jpg')",
-    "background-size": "cover",
-    "background-repeat": "no-repeat",
-    "background-position": "center center"
-  }
+    return (
+        <div className="sc-page">
+            <h1 className="sc-page-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
+                {prompt.name}
+            </h1>
 
-  const handleCreateStoryClick = () => {
-    navigate("/make/begin/" + promptId);
-  }
+            {genres.length > 0 && (
+                <div className="sc-tags" style={{ marginBottom: '12px' }}>
+                    {genres.map((g, i) => <span key={i} className="sc-tag">{g}</span>)}
+                </div>
+            )}
 
-  return (stories && prompt &&
-    <div className="row" style={background}>
+            {prompt.description && (
+                <p style={{
+                    fontFamily: 'var(--font-body)',
+                    color: 'var(--text-dim)',
+                    fontSize: '1.05rem',
+                    fontStyle: 'italic',
+                    marginBottom: '24px'
+                }}>
+                    {prompt.description}
+                </p>
+            )}
 
-      <div className="col-md-1 col-lg-2 col-xl-3">
+            {currentUser && (
+                <div style={{ marginBottom: '32px' }}>
+                    <button
+                        className="sc-btn sc-btn-primary"
+                        onClick={() => navigate('/make/begin/' + promptId)}>
+                        Start a story from this prompt →
+                    </button>
+                </div>
+            )}
 
-      </div>
+            <hr className="sc-divider" />
 
-      <div className="col-auto col-md-10 col-lg-8 col-xl-6">
-        <h1 className="text-center" style={header}>
-          {prompt.name}
-        </h1>
+            <h3 className="sc-section-title" style={{ marginTop: '8px' }}>
+                Published Stories
+                <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 400, fontSize: '0.85rem', color: 'var(--text-muted)', marginLeft: '10px' }}>
+                    ({stories.length})
+                </span>
+            </h3>
 
-        {currentUser && 
-          <button className="create-story" onClick={handleCreateStoryClick}>
-            Create new story
-          </button>
-        }
-
-        <h3 className="text-center" style={header}>Published Stories:</h3>
-
-        <div>
-          {stories && stories.map((story) =>
-            <HomeStoryCard key={story.id} story={story} />
-          )}
+            {stories.length === 0 ? (
+                <div className="sc-empty">
+                    No stories yet — be the first to write one.
+                </div>
+            ) : (
+                stories.map(story => (
+                    <div key={story.story_id} style={{ marginBottom: '16px' }}>
+                        <HomeStoryCard story={story} />
+                    </div>
+                ))
+            )}
         </div>
-
-      </div>
-
-      <div className="col-md-1 col-lg-2 col-xl-3">
-
-      </div>
-
-    </div>
-  );
+    );
 }
-
-
-

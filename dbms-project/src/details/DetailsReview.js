@@ -1,95 +1,71 @@
-import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import { updateCommentThunk, getStoryCommentsThunk, deleteCommentThunk} from "../comments/comment-thunks";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { updateCommentThunk, getStoryCommentsThunk, deleteCommentThunk } from "../comments/comment-thunks";
 
-function DetailsReview({comment}) {
-
-    const {currentUser} = useSelector((state) => state.auth);
-
+function DetailsReview({ comment }) {
+    const { currentUser } = useSelector((state) => state.auth);
     const [editing, setEditing] = useState(false);
-    const [editContent, setEditContent] = useState();
-
+    const [editContent, setEditContent] = useState('');
     const dispatch = useDispatch();
 
+    if (!comment) return null;
 
-    const link = {
-        "text-decoration": "none",
-        "color": "black"
+    const isOwner = currentUser && currentUser.username === comment.username;
+
+    if (editing) {
+        return (
+            <div className="sc-comment">
+                <textarea
+                    className="sc-textarea"
+                    rows="3"
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    style={{ marginBottom: '10px', width: '100%' }}
+                />
+                <div className="sc-btn-row">
+                    <button
+                        className="sc-btn sc-btn-success sc-btn-sm"
+                        onClick={async () => {
+                            setEditing(false);
+                            await dispatch(updateCommentThunk({ ...comment, text: editContent }));
+                            dispatch(getStoryCommentsThunk(comment.story_id));
+                        }}>
+                        Save
+                    </button>
+                    <button
+                        className="sc-btn sc-btn-ghost sc-btn-sm"
+                        onClick={() => setEditing(false)}>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        );
     }
 
-
-    return(
-        <div className="mb-5">
-
-            {comment &&
-                <div>
-                 {editing ?
-
-                  <div>
-                  <button className="btn btn-success float-end" type="button"
-                          id="button-addon2"
-                          onClick={async () => {
-                                setEditing(false);
-                                await dispatch(updateCommentThunk({
-                                                             ...comment,
-                                                             text: editContent
-                                }));
-                                dispatch(getStoryCommentsThunk(comment.story_id));
-                          }}>Save
-                  </button>
-
-                  <textarea
-                      cols="50"
-                      rows="2"
-                      value={editContent}
-                      onChange={(event) => {
-                          setEditContent(event.target.value);
-                      }}
-                  />
-                  </div>
-
-
-
-
-                          :
-                  <div>
-                      {currentUser && (currentUser.username === comment.username) &&
-                                   <div>
-
-                                       <button className="btn btn-danger float-end" type="button"
-                                               id="button-addon2"
-                                               onClick={async () => {
-                                                await dispatch(deleteCommentThunk(comment.id));
-                                                dispatch(getStoryCommentsThunk(comment.story_id));
-                                            }}>Delete
-                                       </button>
-                                       <button className="btn btn-warning float-end" type="button"
-                                               id="button-addon2"
-                                               onClick={async () => {
-                                                   setEditing(true)
-                                                   setEditContent(comment.text)
-                                               }}>Edit
-                                       </button>
-                                   </div>
-                      }
-
-                     <figure>
-                         <blockquote className="blockquote">
-                            <p className="mb-0">{comment.text}</p>
-                         </blockquote>
-                         <Link to={'/profile/' + comment.username} style={link}>
-                             <figcaption className="blockquote-footer">
-                             {comment.username}
-                             </figcaption>
-                         </Link>
-                     </figure>
-                  </div>
-                 }
-             </div>
-            }
-
-
+    return (
+        <div className="sc-comment">
+            {isOwner && (
+                <div className="sc-comment-actions">
+                    <button
+                        className="sc-btn sc-btn-ghost sc-btn-sm"
+                        onClick={() => { setEditing(true); setEditContent(comment.text); }}>
+                        Edit
+                    </button>
+                    <button
+                        className="sc-btn sc-btn-danger sc-btn-sm"
+                        onClick={async () => {
+                            await dispatch(deleteCommentThunk(comment.id));
+                            dispatch(getStoryCommentsThunk(comment.story_id));
+                        }}>
+                        Delete
+                    </button>
+                </div>
+            )}
+            <p className="sc-comment-text">{comment.text}</p>
+            <div className="sc-comment-author">
+                <Link to={'/profile/' + comment.username}>{comment.username}</Link>
+            </div>
         </div>
     );
 }

@@ -22,4 +22,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Top-level package files (root-level only, not subprojects)
+/package.json
+/package-lock.json
+
+# Project-specific ignores
+CLAUDE.md
+screenshot.mjs
+temporary screenshots/
+.claude/
+
+# Node modules (all locations)
+node_modules/
+dbms-project/node_modules/
+dbms-project-node/node_modules/
+
 

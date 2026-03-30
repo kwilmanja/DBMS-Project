@@ -20,7 +20,7 @@ import Details from "./details/Details.js";
 
 function App() {
   return (
-    <div className="container-fluid">
+    <div>
       <Provider store={store}>
         <CurrentUserContext>
           <BrowserRouter>
